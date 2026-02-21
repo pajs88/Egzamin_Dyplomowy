@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pytania Otwarte | Baza Wiedzy</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-[#fcfcfc] text-slate-900 font-sans min-h-screen pb-20">
+
+    <div class="max-w-5xl mx-auto px-6 pt-6">
+        <button onclick="window.location.href='index.html'" class="text-slate-400 font-bold text-[10px] uppercase tracking-[0.2em] hover:text-indigo-900 transition-colors flex items-center gap-2">
+            ← Powrót do menu głównego
+        </button>
+    </div>
+
+    <header class="p-10 max-w-5xl mx-auto text-center">
+        <h1 class="text-xs font-black uppercase tracking-[0.3em] text-indigo-900 mb-2">Egzamin Dyplomowy</h1>
+        <h2 class="text-3xl font-black text-slate-800">Pytania Otwarte</h2>
+        <p class="text-slate-400 text-sm mt-2">Wybierz kategorię, aby przejrzeć zagadnienia</p>
+    </header>
+
+    <main class="max-w-5xl mx-auto px-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-12">
+            <button onclick="loadBlock(1, this)" class="block-btn p-6 rounded-3xl border-2 border-slate-100 bg-white shadow-sm hover:shadow-md transition-all text-center group flex flex-col justify-center min-h-[140px]">
+                <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Blok 1</span>
+                <span class="font-black text-slate-700 group-hover:text-indigo-600 text-sm leading-tight">Historia powszechna i teorie stosunków międzynarodowych</span>
+            </button>
+
+            <button onclick="loadBlock(2, this)" class="block-btn p-6 rounded-3xl border-2 border-slate-100 bg-white shadow-sm hover:shadow-md transition-all text-center group flex flex-col justify-center min-h-[140px]">
+                <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Blok 2</span>
+                <span class="font-black text-slate-700 group-hover:text-indigo-600 text-sm leading-tight">Bezpieczeństwo międzynarodowe i narodowe</span>
+            </button>
+
+            <button onclick="loadBlock(3, this)" class="block-btn p-6 rounded-3xl border-2 border-slate-100 bg-white shadow-sm hover:shadow-md transition-all text-center group flex flex-col justify-center min-h-[140px]">
+                <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Blok 3</span>
+                <span class="font-black text-slate-700 group-hover:text-indigo-600 text-sm leading-tight">Międzynarodowe stosunki gospodarcze i prawo międzynarodowe</span>
+            </button>
+
+            <button onclick="loadBlock(4, this)" class="block-btn p-6 rounded-3xl border-2 border-slate-100 bg-white shadow-sm hover:shadow-md transition-all text-center group flex flex-col justify-center min-h-[140px]">
+                <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Blok 4</span>
+                <span class="font-black text-slate-700 group-hover:text-indigo-600 text-sm leading-tight">Organizacje międzynarodowe i polityka zagraniczna RP</span>
+            </button>
+
+            <button onclick="loadBlock(5, this)" class="block-btn p-6 rounded-3xl border-2 border-slate-100 bg-white shadow-sm hover:shadow-md transition-all text-center group flex flex-col justify-center min-h-[140px]">
+                <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Blok 5</span>
+                <span class="font-black text-slate-700 group-hover:text-indigo-600 text-sm leading-tight">Studia regionalne i globalne</span>
+            </button>
+
+            <button onclick="loadBlock(6, this)" class="block-btn p-6 rounded-3xl border-2 border-slate-100 bg-white shadow-sm hover:shadow-md transition-all text-center group flex flex-col justify-center min-h-[140px]">
+                <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Specjalność</span>
+                <span class="font-black text-slate-700 group-hover:text-indigo-600 text-sm leading-tight">Cyberbezpieczeństwo</span>
+            </button>
+        </div>
+
+        <div id="questions-container" class="space-y-4">
+            <div class="text-center py-20 text-slate-300 border-2 border-dashed border-slate-100 rounded-3xl">
+                Wybierz kategorię powyżej, aby wyświetlić listę pytań
+            </div>
+        </div>
+    </main>
+
+    <script src="./pliki z pytaniami/pytaniaO.js"></script>
+
+    <script>
+        const blockNames = {
+            1: "Historia powszechna i teorie stosunków międzynarodowych",
+            2: "Bezpieczeństwo międzynarodowe i narodowe",
+            3: "Międzynarodowe stosunki gospodarcze i prawo międzynarodowe",
+            4: "Organizacje międzynarodowe i polityka zagraniczna RP",
+            5: "Studia regionalne i globalne",
+            6: "Cyberbezpieczeństwo"
+        };
+
+        function parseBaza(csvString) {
+            if (!csvString) return [];
+            const lines = csvString.trim().split('\n');
+            const result = [];
+            for (let i = 1; i < lines.length; i++) {
+                const parts = lines[i].split(';');
+                if (parts.length >= 2) {
+                    result.push({ id: parts[0], text: parts[1] });
+                }
+            }
+            return result;
+        }
+
+        function loadBlock(blockNum, btnElement) {
+            document.querySelectorAll('.block-btn').forEach(btn => {
+                btn.classList.remove('border-indigo-600', 'bg-indigo-50', 'ring-2', 'ring-indigo-100');
+            });
+            btnElement.classList.add('border-indigo-600', 'bg-indigo-50', 'ring-2', 'ring-indigo-100');
+
+            let rawData;
+            switch(blockNum) {
+                case 1: rawData = typeof bazaO1 !== 'undefined' ? bazaO1 : ""; break;
+                case 2: rawData = typeof bazaO2 !== 'undefined' ? bazaO2 : ""; break;
+                case 3: rawData = typeof bazaO3 !== 'undefined' ? bazaO3 : ""; break;
+                case 4: rawData = typeof bazaO4 !== 'undefined' ? bazaO4 : ""; break;
+                case 5: rawData = typeof bazaO5 !== 'undefined' ? bazaO5 : ""; break;
+                case 6: rawData = typeof bazaO6 !== 'undefined' ? bazaO6 : ""; break;
+            }
+
+            const questions = parseBaza(rawData);
+            const container = document.getElementById('questions-container');
+            
+            container.innerHTML = `
+                <div class="mb-6 flex flex-col md:flex-row md:items-center gap-2 md:gap-4 animate-fade-in">
+                    <h3 class="text-sm font-black uppercase tracking-widest text-indigo-900">
+                        ${blockNames[blockNum]}
+                    </h3>
+                    <div class="hidden md:block h-px bg-slate-100 flex-1"></div>
+                    <span class="text-[10px] font-bold text-slate-400">RAZEM: ${questions.length} PYTAŃ</span>
+                </div>
+            `;
+
+            if (questions.length === 0) {
+                container.innerHTML += `<div class="text-center py-10 text-slate-400 italic">Błąd ładowania bazy lub brak pytań w tym bloku.</div>`;
+            }
+
+            questions.forEach(q => {
+                const qCard = document.createElement('div');
+                qCard.className = "p-6 bg-white rounded-2xl border border-slate-100 shadow-sm hover:border-indigo-200 transition-all hover:shadow-md";
+                qCard.innerHTML = `
+                    <div class="flex gap-4">
+                        <span class="flex-shrink-0 w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center text-xs font-black text-slate-400 border border-slate-100">
+                            ${q.id}
+                        </span>
+                        <p class="text-slate-700 font-medium leading-relaxed pt-1">
+                            ${q.text}
+                        </p>
+                    </div>
+                `;
+                container.appendChild(qCard);
+            });
+
+            window.scrollTo({
+                top: container.offsetTop - 40,
+                behavior: 'smooth'
+            });
+        }
+    </script>
+</body>
+</html>
