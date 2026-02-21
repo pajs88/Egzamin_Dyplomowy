@@ -179,24 +179,46 @@
             answered = true;
 
             const correct = activeQuestion.correct;
+            const isCorrect = (key === correct);
             const buttons = document.querySelectorAll('.option-btn');
+
+            // --- LOGIKA ZAPISYWANIA POSTĘPU (ZGODNA Z UCZENIE.HTML) ---
+            let stats = JSON.parse(localStorage.getItem('learningStats')) || {};
+            const qId = activeQuestion.text; // Używamy treści pytania jako unikalnego klucza
+
+            if (!stats[qId]) {
+                stats[qId] = {
+                    text: activeQuestion.text,
+                    ans: activeQuestion.ans,
+                    correct: activeQuestion.correct,
+                    cat: currentLabel,
+                    ok: 0,
+                    bad: 0
+                };
+            }
+
+            if (isCorrect) {
+                stats[qId].ok++;
+            } else {
+                stats[qId].bad++;
+            }
+
+            localStorage.setItem('learningStats', JSON.stringify(stats));
+            // --- KONIEC LOGIKI ZAPISU ---
 
             buttons.forEach(btn => {
                 const btnKey = btn.querySelector('span').innerText;
                 btn.style.cursor = "default";
 
                 if (btnKey === correct) {
-                    // Prawidłowa odpowiedź (ciemny zielony z prośby)
                     btn.classList.add('actual-correct'); 
                 }
-                
+                  
                 if (btnKey === key) {
-                    if (key === correct) {
-                        // Trafienie (jasny zielony #10b981)
+                    if (isCorrect) {
                         btn.classList.remove('actual-correct');
                         btn.classList.add('correct-selected');
                     } else {
-                        // Pudło (czerwony)
                         btn.classList.add('wrong-selected');
                     }
                 }
