@@ -55,3 +55,5 @@ const bazaO6 = `ID;Pytanie
 3;Wyjaśnij, czym jest wojna hybrydowa i podaj przykłady jej narzędzi. Jakie są główne cele wojny hybrydowej?
 4;Wyjaśnij, czym jest Big Data i jakie są jego trzy główne cechy (model 3V). Podaj przykłady zastosowania Big Data w różnych dziedzinach.
 5;Wyjaśnij, czym jest zarządzanie ryzykiem w kontekście bezpieczeństwa informacji. Jak należy podchodzić do kosztów wdrożenia systemów bezpieczeństwa?`;
+
+//XD
