@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tryb Snajpera | Wielkie Strzały</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .option-btn { 
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); 
+            border-width: 4px;
+            min-height: 120px;
+        }
+        /* Kolory po strzale */
+        .correct-selected { background-color: #10b981 !important; color: white !important; border-color: #059669 !important; transform: scale(1.02); }
+        .wrong-selected { background-color: #ef4444 !important; color: white !important; border-color: #dc2626 !important; }
+        .actual-correct { background-color: #064e3b !important; color: white !important; border-color: #022c22 !important; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
+        
+        .block-active { border-color: #312e81 !important; background-color: #312e81 !important; color: white !important; }
+        .glass-card { background: white; border-radius: 4rem; border: 4px solid white; }
+    </style>
+</head>
+<body class="bg-slate-200 text-slate-900 font-sans min-h-screen pb-20">
+
+    <header class="p-8 max-w-7xl mx-auto flex justify-between items-center">
+        <div>
+            <h1 class="text-4xl font-black uppercase tracking-tighter text-indigo-900">Tryb Snajpera</h1>
+            <p class="text-xs font-bold text-slate-500 uppercase tracking-widest">Szybki strzał • Błyskawiczna wiedza</p>
+        </div>
+        <button onclick="window.location.href='main.html'" class="px-8 py-4 bg-white rounded-2xl shadow-md text-xs font-black uppercase tracking-widest text-slate-400 hover:text-indigo-900 transition-all">
+            ← Wyjdź
+        </button>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4">
+        
+        <section class="mb-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <button onclick="loadBlock(1, this)" class="block-btn p-8 rounded-[2.5rem] bg-white shadow-xl text-left border-4 border-transparent hover:border-indigo-200 transition-all">
+                <span class="block text-xs font-black text-indigo-400 uppercase mb-2">Blok 1</span>
+                <span class="text-xl font-bold leading-tight">Historia powszechna i teorie stosunków międzynarodowych</span>
+            </button>
+            <button onclick="loadBlock(2, this)" class="block-btn p-8 rounded-[2.5rem] bg-white shadow-xl text-left border-4 border-transparent hover:border-indigo-200 transition-all">
+                <span class="block text-xs font-black text-indigo-400 uppercase mb-2">Blok 2</span>
+                <span class="text-xl font-bold leading-tight">Ekonomia międzynarodowa</span>
+            </button>
+            <button onclick="loadBlock(3, this)" class="block-btn p-8 rounded-[2.5rem] bg-white shadow-xl text-left border-4 border-transparent hover:border-indigo-200 transition-all">
+                <span class="block text-xs font-black text-indigo-400 uppercase mb-2">Blok 3</span>
+                <span class="text-xl font-bold leading-tight">Bezpieczeństwo międzynarodowe</span>
+            </button>
+            <button onclick="loadBlock(4, this)" class="block-btn p-8 rounded-[2.5rem] bg-white shadow-xl text-left border-4 border-transparent hover:border-indigo-200 transition-all">
+                <span class="block text-xs font-black text-indigo-400 uppercase mb-2">Blok 4</span>
+                <span class="text-xl font-bold leading-tight">Podstawy prawa i organizacji państwa</span>
+            </button>
+            <button onclick="loadBlock(5, this)" class="block-btn p-8 rounded-[2.5rem] bg-white shadow-xl text-left border-4 border-transparent hover:border-indigo-200 transition-all">
+                <span class="block text-xs font-black text-indigo-400 uppercase mb-2">Blok 5</span>
+                <span class="text-xl font-bold leading-tight">Studia regionalne i globalne</span>
+            </button>
+            <button onclick="loadBlock('Spec', this)" class="block-btn p-8 rounded-[2.5rem] bg-indigo-50 shadow-xl text-left border-4 border-indigo-100 hover:border-indigo-300 transition-all">
+                <span class="block text-xs font-black text-indigo-600 uppercase mb-2">Specjalność</span>
+                <span class="text-xl font-bold leading-tight italic text-indigo-900">Cyberbezpieczeństwo</span>
+            </button>
+        </section>
+
+        <article id="question-card" class="glass-card p-12 md:p-24 shadow-2xl hidden relative overflow-hidden">
+            <div id="badge" class="absolute top-0 left-0 px-10 py-4 bg-indigo-900 text-white text-[10px] font-black uppercase tracking-[0.3em] rounded-br-[2rem]">
+                GOTOWY?
+            </div>
+
+            <h2 id="q-text" class="text-3xl md:text-5xl font-black text-slate-800 text-center mb-20 leading-[1.15] tracking-tight">
+                Wybierz kategorię powyżej, aby wylosować pytanie.
+            </h2>
+
+            <div id="options-container" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                </div>
+
+            <div id="action-area" class="mt-20 text-center hidden">
+                <button onclick="drawNext()" class="px-20 py-10 bg-indigo-900 text-white rounded-[3rem] font-black uppercase text-xl tracking-[0.2em] shadow-2xl hover:bg-black hover:-translate-y-2 transition-all">
+                    KOLEJNY STRZAŁ →
+                </button>
+            </div>
+        </article>
+
+        <div id="placeholder" class="py-20 text-center opacity-20">
+            <p class="text-3xl font-black uppercase tracking-widest italic">Celuj w konkretny blok</p>
+        </div>
+
+    </main>
+
+    <script src="./pliki z pytaniami/pytania.js"></script>
+
+    <script>
+        let currentPool = [];
+        let currentLabel = "";
+        let answered = false;
+        let activeQuestion = null;
+
+        const labels = {
+            1: "Historia i Teorie SM",
+            2: "Ekonomia Międzynarodowa",
+            3: "Bezpieczeństwo",
+            4: "Prawo i Państwo",
+            5: "Studia Regionalne",
+            'Spec': "Cyberbezpieczeństwo"
+        };
+
+        // --- PARSER (WZOROWANY NA TWOIM EGZAMINIE) ---
+        function parseCSV(csvContent) {
+            if (!csvContent || csvContent.trim() === "") return [];
+            const lines = csvContent.split(/\r?\n/).filter(l => l.trim() !== "");
+            lines.shift(); // Nagłówek
+            return lines.map(line => {
+                const c = line.split(';').map(v => v.replace(/^"|"$/g, '').trim());
+                return {
+                    text: c[1] || "Błąd treści",
+                    ans: { A: c[2], B: c[3], C: c[4], D: c[5] },
+                    correct: c[6] ? c[6].toUpperCase() : "A"
+                };
+            });
+        }
+
+        // --- ŁADOWANIE BLOKU (ZGODNE Z TWOIM STYLEM) ---
+        function loadBlock(num, btn) {
+            let rawData = "";
+            
+            // Bezpośrednie sprawdzenie zmiennych z pytania.js
+            if(num === 1) rawData = typeof baza1 !== 'undefined' ? baza1 : "";
+            if(num === 2) rawData = typeof baza2 !== 'undefined' ? baza2 : "";
+            if(num === 3) rawData = typeof baza3 !== 'undefined' ? baza3 : "";
+            if(num === 4) rawData = typeof baza4 !== 'undefined' ? baza4 : "";
+            if(num === 5) rawData = typeof baza5 !== 'undefined' ? baza5 : "";
+            if(num === 'Spec') rawData = typeof bazaSpec !== 'undefined' ? bazaSpec : "";
+
+            if (!rawData) {
+                alert("Nie znaleziono zmiennej baza" + num + " w pliku pytania.js");
+                return;
+            }
+
+            currentPool = parseCSV(rawData);
+            currentLabel = labels[num];
+
+            document.querySelectorAll('.block-btn').forEach(b => b.classList.remove('block-active'));
+            btn.classList.add('block-active');
+
+            document.getElementById('placeholder').classList.add('hidden');
+            document.getElementById('question-card').classList.remove('hidden');
+            
+            drawNext();
+        }
+
+        function drawNext() {
+            answered = false;
+            document.getElementById('action-area').classList.add('hidden');
+            
+            activeQuestion = currentPool[Math.floor(Math.random() * currentPool.length)];
+
+            document.getElementById('badge').innerText = currentLabel;
+            document.getElementById('q-text').innerText = activeQuestion.text;
+            
+            const container = document.getElementById('options-container');
+            container.innerHTML = '';
+
+            Object.entries(activeQuestion.ans).forEach(([key, val]) => {
+                const b = document.createElement('button');
+                b.className = "option-btn p-10 rounded-[2.5rem] bg-slate-50 border-4 border-white shadow-sm text-left hover:border-indigo-200 transition-all flex items-start gap-8 group";
+                b.innerHTML = `
+                    <span class="w-16 h-16 shrink-0 rounded-2xl bg-white flex items-center justify-center font-black text-slate-400 text-3xl group-hover:text-indigo-600 transition-colors">${key}</span>
+                    <span class="text-2xl font-bold text-slate-700 leading-tight pt-3">${val}</span>
+                `;
+                b.onclick = () => checkShot(key, b);
+                container.appendChild(b);
+            });
+
+            window.scrollTo({ top: document.getElementById('question-card').offsetTop - 50, behavior: 'smooth' });
+        }
+
+        function checkShot(key, element) {
+            if (answered) return;
+            answered = true;
+
+            const correct = activeQuestion.correct;
+            const buttons = document.querySelectorAll('.option-btn');
+
+            buttons.forEach(btn => {
+                const btnKey = btn.querySelector('span').innerText;
+                btn.style.cursor = "default";
+
+                if (btnKey === correct) {
+                    btn.classList.add('actual-correct'); // Prawidłowa zawsze na ciemny zielony
+                }
+                if (btnKey === key && key !== correct) {
+                    btn.classList.add('wrong-selected'); // Błędna Twoja na czerwono
+                }
+                if (btnKey === key && key === correct) {
+                    btn.classList.add('correct-selected'); // Trafiona Twoja na jasny zielony
+                }
+            });
+
+            document.getElementById('action-area').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>

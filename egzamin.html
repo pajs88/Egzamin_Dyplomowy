@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Egzamin Dyplomowy | System Losowania</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .option-label:has(input:checked) { border-color: #312e81; background-color: #eef2ff; }
+        .timer-critical { color: #ef4444; font-weight: 800; animation: pulse 1s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+    </style>
+</head>
+<body class="bg-[#fcfcfc] text-slate-900 font-sans min-h-screen">
+
+    <header class="p-6 max-w-5xl mx-auto flex justify-between items-center">
+        <div class="flex flex-col">
+            <h1 class="text-xs font-black uppercase tracking-[0.3em] text-indigo-900">Egzamin Dyplomowy 2025/2026</h1>
+            <span id="block-info" class="text-[10px] text-slate-400 uppercase font-bold tracking-widest mt-1">Inicjalizacja losowania...</span>
+        </div>
+        <div id="timer" class="text-lg font-mono bg-white px-4 py-2 rounded-xl border border-slate-200 shadow-sm">90:00</div>
+    </header>
+
+    <main class="max-w-3xl mx-auto px-4 py-8">
+        <section class="mb-10">
+            <div class="flex justify-between text-[10px] uppercase font-bold text-slate-400 mb-2 tracking-widest">
+                <span id="current-category">Kategoria: ...</span>
+                <span id="step-counter">00 / 50</span>
+            </div>
+            <div class="h-1.5 bg-slate-100 w-full rounded-full overflow-hidden">
+                <div id="progress-fill" class="h-full bg-indigo-900 transition-all duration-700 ease-out" style="width: 0%"></div>
+            </div>
+        </section>
+
+        <article class="bg-white p-8 md:p-12 rounded-3xl border border-slate-100 shadow-sm relative">
+            <h2 id="q-text" class="text-2xl font-semibold mb-10 leading-snug text-slate-800 tracking-tight">
+                Ładowanie pytań...
+            </h2>
+            
+            <form id="q-form" class="space-y-4">
+                </form>
+
+            <footer class="mt-12 flex justify-between items-center">
+                <button id="prev" class="text-slate-400 font-bold text-xs uppercase tracking-widest hover:text-indigo-900 disabled:opacity-0">Wstecz</button>
+                <button id="next" class="px-10 py-4 bg-indigo-900 text-white rounded-2xl font-bold shadow-lg hover:bg-black transition-all uppercase text-xs tracking-widest">Następne pytanie</button>
+            </footer>
+        </article>
+    </main>
+
+    <script src="./pliki z pytaniami/pytania.js"></script>
+
+    <script>
+        let questions = [];
+        let userAnswers = [];
+        let current = 0;
+        let timeLeft = 90 * 60;
+
+        // --- PARSER ---
+        function parseCSV(csvContent, categoryName) {
+            if (!csvContent || csvContent.trim() === "") return [];
+            const lines = csvContent.split(/\r?\n/).filter(l => l.trim() !== "");
+            lines.shift(); // Nagłówek
+            return lines.map(line => {
+                const c = line.split(';').map(v => v.replace(/^"|"$/g, '').trim());
+                return {
+                    text: c[1] || "Błąd treści",
+                    ans: { A: c[2], B: c[3], C: c[4], D: c[5] },
+                    correct: c[6] ? c[6].toUpperCase() : "A",
+                    category: categoryName
+                };
+            });
+        }
+
+        function getRandom(arr, n, categoryName) {
+            const shuffled = [...arr].sort(() => 0.5 - Math.random());
+            const selected = shuffled.slice(0, n);
+            
+            // Jeśli w bazie jest za mało pytań, uzupełnij "dummy"
+            while (selected.length < n) {
+                selected.push({
+                    text: `[BRAK PYTANIA W BAZIE] Kategoria: ${categoryName}. Dodaj więcej pytań do pliku js!`,
+                    ans: { A: "Opcja A", B: "Opcja B", C: "Opcja C", D: "Opcja D" },
+                    correct: "A",
+                    category: categoryName
+                });
+            }
+            return selected;
+        }
+
+        // --- LOGIKA LOSOWANIA ZGODNA Z INSTRUKCJĄ ---
+        function initExam() {
+            try {
+                // Definicja zmiennych z Twojego pliku pytania.js
+                // Sprawdzamy czy zmienne istnieją, jeśli nie - podstawiamy pusty tekst
+                const b1 = typeof baza1 !== 'undefined' ? baza1 : "";
+                const b2 = typeof baza2 !== 'undefined' ? baza2 : "";
+                const b3 = typeof baza3 !== 'undefined' ? baza3 : "";
+                const b4 = typeof baza4 !== 'undefined' ? baza4 : "";
+                const b5 = typeof baza5 !== 'undefined' ? baza5 : "";
+                const bS = typeof bazaSpec !== 'undefined' ? bazaSpec : "";
+
+                // 1. Losujemy po 8 pytań z 5 bloków ogólnych (8 * 5 = 40)
+                const q1 = getRandom(parseCSV(b1, "Blok 1: Historia i Teoria"), 8, "Blok 1");
+                const q2 = getRandom(parseCSV(b2, "Blok 2: Ekonomia"), 8, "Blok 2");
+                const q3 = getRandom(parseCSV(b3, "Blok 3: Bezpieczeństwo"), 8, "Blok 3");
+                const q4 = getRandom(parseCSV(b4, "Blok 4: Prawo i Państwo"), 8, "Blok 4");
+                const q5 = getRandom(parseCSV(b5, "Blok 5: Studia Regionalne"), 8, "Blok 5");
+
+                // 2. Losujemy 10 pytań z bloku specjalnościowego
+                const qSpec = getRandom(parseCSV(bS, "Blok Specjalnościowy"), 10, "Specjalność");
+
+                // 3. Łączymy wszystko
+                questions = [...q1, ...q2, ...q3, ...q4, ...q5, ...qSpec];
+                
+                // 4. Mieszamy finalną listę 50 pytań, żeby nie szły blokami
+                questions.sort(() => 0.5 - Math.random());
+
+                userAnswers = new Array(50).fill(null);
+                document.getElementById('block-info').innerText = "Wylosowano 40 ogólnych + 10 specjalnościowych";
+                
+                render();
+                startTimer();
+            } catch (e) {
+                document.getElementById('q-text').innerText = "Błąd krytyczny: " + e.message;
+            }
+        }
+
+        // --- RENDEROWANIE ---
+        function render() {
+            const q = questions[current];
+            document.getElementById('q-text').innerText = q.text;
+            document.getElementById('current-category').innerText = `Kategoria: ${q.category}`;
+            document.getElementById('step-counter').innerText = `${String(current + 1).padStart(2, '0')} / 50`;
+            document.getElementById('progress-fill').style.width = `${((current + 1) / 50) * 100}%`;
+            
+            const form = document.getElementById('q-form');
+            form.innerHTML = Object.entries(q.ans).map(([key, val]) => `
+                <label class="option-label flex items-center p-5 border-2 border-slate-50 rounded-2xl cursor-pointer hover:bg-slate-50 transition-all">
+                    <input type="radio" name="choice" value="${key}" class="hidden" ${userAnswers[current] === key ? 'checked' : ''}>
+                    <span class="w-8 h-8 flex items-center justify-center rounded-lg bg-slate-100 text-slate-400 font-bold mr-4">${key}</span>
+                    <span class="font-medium text-slate-700">${val}</span>
+                </label>
+            `).join('');
+
+            document.getElementById('prev').disabled = current === 0;
+            document.getElementById('next').innerText = current === 49 ? "Zakończ egzamin" : "Następne pytanie";
+        }
+
+        // --- TIMER ---
+        function startTimer() {
+            const display = document.getElementById('timer');
+            const interval = setInterval(() => {
+                let m = Math.floor(timeLeft / 60), s = timeLeft % 60;
+                display.innerText = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+                if (timeLeft <= 300) display.classList.add('timer-critical');
+                if (timeLeft <= 0) { clearInterval(interval); finish(); }
+                timeLeft--;
+            }, 1000);
+        }
+
+        function finish() {
+            localStorage.setItem('lastExamResults', JSON.stringify({
+                questions: questions,
+                userAnswers: userAnswers,
+                maxPoints: 50
+            }));
+            window.location.href = 'odpowiedzi.html';
+        }
+
+        document.getElementById('next').onclick = () => {
+            const sel = document.querySelector('input[name="choice"]:checked');
+            if(sel) userAnswers[current] = sel.value;
+            if(current < 49) { current++; render(); } else { finish(); }
+        };
+
+        document.getElementById('prev').onclick = () => {
+            if(current > 0) { current--; render(); }
+        };
+
+        initExam();
+    </script>
+</body>
+</html>

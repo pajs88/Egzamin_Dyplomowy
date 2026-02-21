@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wyniki Egzaminu | Podsumowanie</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .correct { border-left: 6px solid #10b981; background-color: #f0fdf4; }
+        .wrong { border-left: 6px solid #ef4444; background-color: #fef2f2; }
+        .badge-correct { background-color: #10b981; color: white; }
+        .badge-wrong { background-color: #ef4444; color: white; }
+    </style>
+</head>
+<body class="bg-[#fcfcfc] text-slate-900 font-sans min-h-screen pb-20">
+
+    <header class="bg-indigo-900 text-white py-12 px-6 shadow-xl">
+        <div class="max-w-4xl mx-auto text-center">
+            <h1 class="text-xs font-bold uppercase tracking-[0.4em] opacity-70 mb-4">Twój Wynik Końcowy</h1>
+            <div class="flex justify-center items-baseline gap-4 mb-6">
+                <span id="score-big" class="text-7xl font-black">0</span>
+                <span class="text-3xl opacity-50">/ 50</span>
+            </div>
+            <div id="grade-box" class="inline-block px-8 py-3 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20">
+                <span class="text-sm uppercase tracking-widest font-bold">Ocena: </span>
+                <span id="grade-val" class="text-2xl font-black ml-2 text-indigo-200">-</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 -mt-8">
+        
+        <section class="bg-white rounded-3xl shadow-lg p-8 mb-10 border border-slate-100">
+            <h2 class="text-lg font-bold uppercase tracking-widest text-slate-400 mb-6 flex items-center gap-3">
+                <span class="w-8 h-px bg-slate-200"></span> 
+                Analiza Twojej wiedzy
+                <span class="w-8 h-px bg-slate-200"></span>
+            </h2>
+            <div id="stats-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                </div>
+        </section>
+
+        <section>
+            <h3 class="text-sm font-bold uppercase tracking-widest text-slate-400 mb-6 ml-4">Szczegółowy przegląd odpowiedzi</h3>
+            <div id="questions-list" class="space-y-4">
+                </div>
+        </section>
+
+        <div class="mt-12 text-center">
+            <button onclick="window.location.href='egzamin.html'" class="px-10 py-4 bg-indigo-900 text-white rounded-2xl font-bold shadow-lg hover:scale-105 transition-all uppercase text-xs tracking-widest">
+                Spróbuj jeszcze raz
+            </button>
+        </div>
+    </main>
+    <!-- ----------------------------------------------------------------------------------------------------------------------------------------- --> 
+    <script>
+        const results = JSON.parse(localStorage.getItem('lastExamResults'));
+
+        if (!results) {
+            alert("Brak wyników do wyświetlenia!");
+            window.location.href = 'egzamin.html';
+        }
+
+        function getGrade(score) {
+            if (score <= 25) return { val: "2.0", label: "Niedostateczny" };
+            if (score <= 30) return { val: "3.0", label: "Dostateczny" };
+            if (score <= 35) return { val: "3.5", label: "Dostateczny plus" };
+            if (score <= 40) return { val: "4.0", label: "Dobry" };
+            if (score <= 45) return { val: "4.5", label: "Dobry plus" };
+            return { val: "5.0", label: "Bardzo dobry" };
+        }
+
+        function renderResults() {
+            let totalScore = 0;
+            const stats = {};
+
+            // Przeliczanie punktów i grupowanie statystyk
+            results.questions.forEach((q, index) => {
+                const userAns = results.userAnswers[index];
+                const isCorrect = userAns === q.correct;
+                if (isCorrect) totalScore++;
+
+                // Statystyki po kategoriach
+                if (!stats[q.category]) {
+                    stats[q.category] = { correct: 0, total: 0 };
+                }
+                stats[q.category].total++;
+                if (isCorrect) stats[q.category].correct++;
+            });
+
+            // Wyświetlanie wyniku i oceny
+            document.getElementById('score-big').innerText = totalScore;
+            const grade = getGrade(totalScore);
+            document.getElementById('grade-val').innerText = `${grade.val} (${grade.label})`;
+
+            // Renderowanie kart statystyk
+            const statsGrid = document.getElementById('stats-grid');
+            Object.entries(stats).forEach(([cat, data]) => {
+                const percent = Math.round((data.correct / data.total) * 100);
+                const colorClass = percent >= 50 ? 'text-indigo-600' : 'text-red-500';
+                
+                statsGrid.innerHTML += `
+                    <div class="p-5 rounded-2xl border border-slate-100 bg-slate-50/50">
+                        <div class="text-[10px] uppercase font-bold text-slate-400 mb-1">${cat}</div>
+                        <div class="flex justify-between items-end">
+                            <div class="text-2xl font-black ${colorClass}">${data.correct}/${data.total}</div>
+                            <div class="text-xs font-bold opacity-40">${percent}% poprawnych</div>
+                        </div>
+                        <div class="w-full h-1 bg-slate-200 rounded-full mt-3 overflow-hidden">
+                            <div class="h-full bg-indigo-500" style="width: ${percent}%"></div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            // Renderowanie listy pytań
+            const list = document.getElementById('questions-list');
+            results.questions.forEach((q, index) => {
+                const userAns = results.userAnswers[index];
+                const isCorrect = userAns === q.correct;
+                
+                list.innerHTML += `
+                    <div class="p-6 rounded-2xl shadow-sm ${isCorrect ? 'correct' : 'wrong'}">
+                        <div class="flex justify-between items-start mb-4">
+                            <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400 italic">${q.category}</span>
+                            <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase ${isCorrect ? 'badge-correct' : 'badge-wrong'}">
+                                ${isCorrect ? 'Dobrze' : 'Błąd'}
+                            </span>
+                        </div>
+                        <p class="font-semibold text-slate-800 mb-4">${q.text}</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
+                            <div class="p-3 rounded-xl border ${userAns === q.correct ? 'bg-green-100 border-green-200' : 'bg-red-50 border-red-100'}">
+                                <span class="block text-[9px] uppercase font-bold opacity-50">Twoja odpowiedź</span>
+                                <strong>${userAns ? userAns + ': ' + q.ans[userAns] : 'Brak odpowiedzi'}</strong>
+                            </div>
+                            <div class="p-3 rounded-xl border bg-indigo-50 border-indigo-100">
+                                <span class="block text-[9px] uppercase font-bold opacity-50 text-indigo-900">Poprawny klucz</span>
+                                <strong class="text-indigo-900">${q.correct}: ${q.ans[q.correct]}</strong>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        renderResults();
+
+        // ... (poprzedni kod renderResults) ...
+
+function saveProgress() {
+    // Pobieramy dotychczasowe statystyki lub tworzymy nowe
+    let learningData = JSON.parse(localStorage.getItem('learningStats')) || {};
+
+    results.questions.forEach((q, index) => {
+        const userAns = results.userAnswers[index];
+        const isCorrect = userAns === q.correct;
+        
+        // Unikalny klucz pytania: Kategoria + Treść (żeby ID się nie myliły)
+        const qKey = btoa(unescape(encodeURIComponent(q.category + q.text))); 
+
+        if (!learningData[qKey]) {
+            learningData[qKey] = { 
+                id: index + 1,
+                cat: q.category,
+                text: q.text,
+                ans: q.ans,
+                correct: q.correct,
+                ok: 0, 
+                bad: 0 
+            };
+        }
+
+        if (isCorrect) learningData[qKey].ok++;
+        else learningData[qKey].bad++;
+    });
+
+    localStorage.setItem('learningStats', JSON.stringify(learningData));
+    generateTxtFile(learningData); // Automatycznie przygotuj dane do txt
+}
+
+function generateTxtFile(data) {
+    let content = "SYSTEM NAUKI - STATUS PYTAŃ\n_________________________________________________\n\n";
+    Object.values(data).forEach(q => {
+        content += `ID: ${q.id} (${q.cat}) "${q.text}" | Klucz: ${q.correct} | ok: ${q.ok} bad: ${q.bad}\n`;
+    });
+
+    // Tworzymy przycisk pobierania (opcjonalne, byś mógł zapisać plik)
+    const blob = new Blob([content], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'uczenie.txt';
+    link.id = 'download-btn';
+    // Możesz go wywołać link.click() jeśli chcesz wymusić pobieranie
+}
+
+// Wywołaj zapisywanie na końcu renderResults
+saveProgress();
+    </script>
+    <!-- ----------------------------------------------------------------------------------------------------------------------------------------- --> 
+</body>
+</html>

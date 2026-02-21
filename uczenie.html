@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Centrum Nauki | Priorytety</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .filter-btn { transition: all 0.3s; border-bottom: 4px solid transparent; }
+        .filter-btn.active.red { border-color: #ef4444; background: #fef2f2; }
+        .filter-btn.active.orange { border-color: #f97316; background: #fff7ed; }
+        .filter-btn.active.green { border-color: #10b981; background: #f0fdf4; }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen pb-20">
+
+    <header class="p-10 max-w-5xl mx-auto">
+        <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="text-center md:text-left">
+                <h1 class="text-3xl font-black text-indigo-900 uppercase tracking-tighter">Twoje postępy w nauce</h1>
+                <p class="text-slate-500 text-sm">Pytania są segregowane automatycznie na podstawie Twoich wyników</p>
+            </div>
+            
+            <button onclick="resetProgress()" class="px-5 py-2 text-[10px] font-bold uppercase tracking-widest text-red-500 border-2 border-red-100 rounded-xl hover:bg-red-50 hover:border-red-200 transition-all flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                Resetuj progres
+            </button>
+        </div>
+    </header>
+
+    <nav class="max-w-4xl mx-auto px-4 mb-10 flex gap-4">
+        <button onclick="filter('trudne')" id="btn-trudne" class="filter-btn red flex-1 bg-white p-6 rounded-2xl shadow-sm text-center">
+            <span class="block text-2xl font-black text-red-500" id="count-trudne">0</span>
+            <span class="text-[10px] font-bold uppercase text-slate-400">Trudne (Błędy ≥ 3)</span>
+        </button>
+        <button onclick="filter('srednie')" id="btn-srednie" class="filter-btn orange flex-1 bg-white p-6 rounded-2xl shadow-sm text-center">
+            <span class="block text-2xl font-black text-orange-500" id="count-srednie">0</span>
+            <span class="text-[10px] font-bold uppercase text-slate-400">Średnie (W trakcie)</span>
+        </button>
+        <button onclick="filter('umiem')" id="btn-umiem" class="filter-btn green flex-1 bg-white p-6 rounded-2xl shadow-sm text-center">
+            <span class="block text-2xl font-black text-emerald-500" id="count-umiem">0</span>
+            <span class="text-[10px] font-bold uppercase text-slate-400">Umiem (Poprawne ≥ 3)</span>
+        </button>
+    </nav>
+
+    <main id="learning-container" class="max-w-4xl mx-auto px-4 space-y-6">
+        </main>
+
+    <script>
+        // Pobieranie danych (funkcja odświeżalna)
+        function getStats() {
+            return JSON.parse(localStorage.getItem('learningStats')) || {};
+        }
+
+        function getPriority(q) {
+            if (q.bad >= 3) return 'trudne';
+            if (q.ok >= 3) return 'umiem';
+            return 'srednie';
+        }
+
+        // --- FUNKCJA RESETOWANIA ---
+        function resetProgress() {
+            const confirmReset = confirm("Czy na pewno chcesz zresetować wszystkie postępy w nauce? Twoje liczniki poprawnych i błędnych odpowiedzi zostaną wyzerowane.");
+            
+            if (confirmReset) {
+                localStorage.removeItem('learningStats');
+                // Odświeżamy stronę, by wyczyścić widok
+                window.location.reload();
+            }
+        }
+
+        function filter(type) {
+            const stats = getStats();
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('btn-' + type).classList.add('active');
+
+            const container = document.getElementById('learning-container');
+            container.innerHTML = '';
+
+            Object.values(stats).forEach(q => {
+                if (getPriority(q) === type) {
+                    const card = document.createElement('div');
+                    card.className = "bg-white p-8 rounded-3xl border border-slate-100 shadow-sm";
+                    card.innerHTML = `
+                        <div class="flex justify-between mb-4">
+                            <span class="text-[10px] font-bold uppercase text-slate-400 tracking-widest">${q.cat}</span>
+                            <span class="text-[10px] font-bold text-slate-400">OK: ${q.ok} | BAD: ${q.bad}</span>
+                        </div>
+                        <h3 class="text-xl font-semibold text-slate-800 mb-6">${q.text}</h3>
+                        <div class="grid gap-3">
+                            ${Object.entries(q.ans).map(([key, text]) => `
+                                <div class="p-4 rounded-xl border-2 ${key === q.correct ? 'border-emerald-500 bg-emerald-50 text-emerald-900 font-bold' : 'border-slate-50 text-slate-500'}">
+                                    ${key}: ${text}
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                    container.appendChild(card);
+                }
+            });
+
+            if (container.innerHTML === '') {
+                container.innerHTML = `<div class="text-center py-20 text-slate-400">Brak pytań w tej kategorii.</div>`;
+            }
+        }
+
+        function init() {
+            const stats = getStats();
+            let c = { trudne: 0, srednie: 0, umiem: 0 };
+            Object.values(stats).forEach(q => c[getPriority(q)]++);
+            
+            document.getElementById('count-trudne').innerText = c.trudne;
+            document.getElementById('count-srednie').innerText = c.srednie;
+            document.getElementById('count-umiem').innerText = c.umiem;
+            
+            filter('trudne');
+        }
+
+        init();
+    </script>
+</body>
+</html>
