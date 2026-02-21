@@ -3,12 +3,16 @@ body {
     background-color: #fcfcfc;
     color: #0f172a; /* slate-900 */
     font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    /* Poprawa renderowania czcionek na iOS/Android */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 /* Efekty szklanych kart (Index & Sniper) */
 .glass-card {
     background: rgba(255, 255, 255, 0.8);
     backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.3);
     border-radius: 2rem;
 }
@@ -17,33 +21,37 @@ body {
     transition: transform 0.2s ease-in-out;
 }
 
-.hover-scale:hover {
-    transform: scale(1.02);
+/* Wyłączamy hover scale na dotyku, żeby uniknąć dziwnych zachowań */
+@media (hover: hover) {
+    .hover-scale:hover {
+        transform: scale(1.02);
+    }
 }
 
 /* --- TRYB UCZENIA (Filtry) --- */
 .filter-btn {
     transition: all 0.3s;
     border-bottom: 4px solid transparent;
+    white-space: nowrap; /* Zapobiega łamaniu tekstu na małych ekranach */
 }
 
-.filter-btn.active.red {
-    border-color: #ef4444;
-    background-color: #fef2f2;
+.filter-btn.active.red { border-color: #ef4444; background-color: #fef2f2; }
+.filter-btn.active.orange { border-color: #f97316; background-color: #fff7ed; }
+.filter-btn.active.green { border-color: #10b981; background-color: #f0fdf4; }
+
+/* --- EGZAMIN (Radio buttons) --- */
+/* Ukrycie domyślnego radia i stylizacja etykiety */
+input[type="radio"] {
+    display: none;
 }
 
-.filter-btn.active.orange {
-    border-color: #f97316;
-    background-color: #fff7ed;
+.option-label {
+    cursor: pointer;
+    transition: all 0.2s;
+    display: block;
+    width: 100%;
 }
 
-.filter-btn.active.green {
-    border-color: #10b981;
-    background-color: #f0fdf4;
-}
-
-/* --- TRYB EGZAMINU --- */
-/* Zaznaczenie wybranej opcji w formularzu */
 .option-label:has(input:checked) {
     border-color: #312e81;
     background-color: #eef2ff;
@@ -72,46 +80,58 @@ body {
     background-color: #fef2f2;
 }
 
-.badge-correct {
-    background-color: #10b981;
-    color: white;
-}
+.badge-correct { background-color: #10b981; color: white; }
+.badge-wrong { background-color: #ef4444; color: white; }
 
-.badge-wrong {
-    background-color: #ef4444;
-    color: white;
-}
-
-/* --- TRYB SNAJPERA (Specyficzne stany przycisków) --- */
+/* --- TRYB SNAJPERA & KAFELKI --- */
 .option-btn {
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    border-width: 4px;
-    min-height: 110px;
+    min-height: 90px;
+    width: 100%;
 }
 
-/* Kolory po oddaniu strzału */
-.correct-selected {
-    background-color: #10b981 !important;
-    color: white !important;
-    border-color: #059669 !important;
-    transform: scale(1.02);
+/* Kolory Snajpera */
+.correct-selected { background-color: #10b981 !important; color: white !important; border-color: #059669 !important; }
+.wrong-selected { background-color: #ef4444 !important; color: white !important; border-color: #dc2626 !important; }
+.actual-correct { background-color: #007c53 !important; color: white !important; border-color: #004d34 !important; }
+.block-active { border-color: #312e81 !important; background-color: #312e81 !important; color: white !important; }
+
+/* --- DOPASOWANIE MOBILNE (Media Queries) --- */
+
+@media (max-width: 768px) {
+    /* Mniejszy nagłówek na telefonach */
+    h1 { font-size: 0.7rem !important; }
+    .text-5xl { font-size: 2.5rem !important; line-height: 1 !important; }
+    
+    /* Zmniejszenie paddingów sekcji */
+    main { padding-left: 1rem !important; padding-right: 1rem !important; padding-top: 2rem !important; }
+    
+    /* Kafelki na stronie głównej i w snajperze */
+    .glass-card {
+        padding: 1.5rem !important;
+        border-radius: 1.5rem !important;
+    }
+    
+    /* Przyciski w kafelkach na pełną szerokość */
+    button {
+        padding-top: 1rem !important;
+        padding-bottom: 1rem !important;
+    }
+
+    /* Wyśrodkowanie statystyk na mobile */
+    #quick-stats {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    /* Pytania otwarte - mniejsze karty */
+    .question-card {
+        padding: 1rem !important;
+    }
 }
 
-.wrong-selected {
-    background-color: #ef4444 !important;
-    color: white !important;
-    border-color: #dc2626 !important;
-}
-
-.actual-correct {
-    background-color: #007c53 !important;
-    color: white !important;
-    border-color: #004d34 !important;
-}
-
-/* Aktywny blok kategorii */
-.block-active {
-    border-color: #312e81 !important;
-    background-color: #312e81 !important;
-    color: white !important;
+/* Specyficzne poprawki dla bardzo małych ekranów (iPhone SE itp.) */
+@media (max-width: 380px) {
+    .text-5xl { font-size: 2rem !important; }
+    .option-btn { min-height: 70px; padding: 1rem !important; }
 }
