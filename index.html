@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Egzamin Dyplomowy | Panel Główny</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <style>
+    <!-- <style>
         .glass-card {
             background: rgba(255, 255, 255, 0.8);
             backdrop-filter: blur(10px);
@@ -13,7 +13,8 @@
         }
         .hover-scale { transition: transform 0.2s ease-in-out; }
         .hover-scale:hover { transform: scale(1.02); }
-    </style>
+    </style> -->
+    <link rel="stylesheet" href="style.css">
 </head>
 <body class="bg-slate-50 text-slate-900 font-sans min-h-screen">
 
@@ -22,13 +23,13 @@
         <div class="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-blue-300 rounded-full blur-[120px]"></div>
     </div>
 
-    <main class="max-w-4xl mx-auto px-6 py-20">
+    <main class="max-w-6xl mx-auto px-6 py-20">
         <header class="text-center mb-16">
             <h1 class="text-xs font-black uppercase tracking-[0.5em] text-indigo-900 mb-4">Stosunki Międzynarodowe</h1>
             <p class="text-5xl font-black text-slate-800 tracking-tighter">System Przygotowania <br>do Egzaminu</p>
         </header>
 
-        <div class="grid md:grid-cols-2 gap-8">
+        <div class="grid md:grid-cols-3 gap-8">
             
             <div class="glass-card p-8 rounded-[2rem] shadow-xl hover-scale bg-white flex flex-col justify-between">
                 <div>
@@ -37,22 +38,42 @@
                     </div>
                     <h2 class="text-2xl font-bold text-slate-800 mb-2">Symulacja Egzaminu</h2>
                     <p class="text-slate-500 text-sm leading-relaxed mb-8">
-                        Podejdź do pełnego testu: 50 pytań losowanych zgodnie z oficjalną instrukcją (40 ogólnych + 10 specjalnościowych). Czas: 90 minut.
+                        Podejdź do pełnego testu: 50 pytań losowanych zgodnie z oficjalną instrukcją. Czas: 90 minut.
                     </p>
                 </div>
                 <button onclick="window.location.href='egzamin.html'" class="w-full py-4 bg-indigo-900 text-white rounded-2xl font-bold uppercase text-xs tracking-widest shadow-lg hover:bg-black transition-all">
                     Rozpocznij test
                 </button>
+                <button onclick="window.location.href='odpowiedzi.html'" class="w-full px-10 py-4 bg-amber-500 text-white rounded-2xl font-bold shadow-lg hover:bg-amber-600 transition-all uppercase text-xs tracking-widest text-center">
+                    Ostatnie odpowiedzi
+                </button>
+            </div>
+            
+            
+
+            <div class="glass-card p-8 rounded-[2rem] shadow-xl hover-scale bg-white border-2 border-indigo-50 flex flex-col justify-between ring-4 ring-indigo-50/50">
+                <div>
+                    <div class="w-12 h-12 bg-indigo-600 text-white rounded-2xl flex items-center justify-center mb-6 shadow-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="22" y1="12" x2="18" y2="12"/><line x1="6" y1="12" x2="2" y2="12"/><line x1="12" y1="6" x2="12" y2="2"/><line x1="12" y1="22" x2="12" y2="18"/></svg>
+                    </div>
+                    <h2 class="text-2xl font-bold text-slate-800 mb-2">Tryb Snajpera</h2>
+                    <p class="text-slate-500 text-sm leading-relaxed mb-8">
+                        Trening precyzyjny. Wybierz konkretny blok i strzelaj po jednym pytaniu z natychmiastową odpowiedzią.
+                    </p>
+                </div>
+                <button onclick="window.location.href='strzaly.html'" class="w-full py-4 bg-indigo-600 text-white rounded-2xl font-bold uppercase text-xs tracking-widest shadow-lg hover:bg-indigo-700 transition-all">
+                    Otwórz Snajpera
+                </button>
             </div>
 
-            <div class="glass-card p-8 rounded-[2rem] shadow-xl hover-scale bg-white border-2 border-indigo-100 flex flex-col justify-between">
+            <div class="glass-card p-8 rounded-[2rem] shadow-xl hover-scale bg-white flex flex-col justify-between">
                 <div>
                     <div class="w-12 h-12 bg-emerald-500 text-white rounded-2xl flex items-center justify-center mb-6 shadow-lg">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
                     </div>
                     <h2 class="text-2xl font-bold text-slate-800 mb-2">Moje Postępy</h2>
                     <p class="text-slate-500 text-sm leading-relaxed mb-4">
-                        Przeglądaj statystyki swojej nauki. System automatycznie segreguje pytania na trudne, średnie i te, które już umiesz.
+                        Przeglądaj statystyki swojej nauki. System segreguje pytania na te trudne i te, które już umiesz.
                     </p>
                     <div id="quick-stats" class="flex gap-2 mb-8">
                         <div class="px-3 py-1 bg-red-50 text-red-500 text-[10px] font-bold rounded-lg border border-red-100">TRUDNE: <span id="s-trudne">0</span></div>
@@ -74,7 +95,6 @@
     </main>
 
     <script>
-        // Funkcja do pobierania szybkich statystyk z LocalStorage, aby karta "Moje postępy" nie była pusta
         function loadQuickStats() {
             const stats = JSON.parse(localStorage.getItem('learningStats')) || {};
             let trudne = 0;

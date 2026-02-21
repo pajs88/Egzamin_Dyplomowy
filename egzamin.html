@@ -5,13 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Egzamin Dyplomowy | System Losowania</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <style>
+    <!-- <style>
         .option-label:has(input:checked) { border-color: #312e81; background-color: #eef2ff; }
         .timer-critical { color: #ef4444; font-weight: 800; animation: pulse 1s infinite; }
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
-    </style>
+    </style> -->
+    <link rel="stylesheet" href="style.css">
 </head>
 <body class="bg-[#fcfcfc] text-slate-900 font-sans min-h-screen">
+
+    <div class="max-w-5xl mx-auto px-6 pt-6">
+        <button onclick="window.location.href='index.html'" class="text-slate-400 font-bold text-[10px] uppercase tracking-[0.2em] hover:text-indigo-900 transition-colors flex items-center gap-2">
+            ← Cofnij do menu
+        </button>
+    </div>
 
     <header class="p-6 max-w-5xl mx-auto flex justify-between items-center">
         <div class="flex flex-col">
@@ -38,11 +45,19 @@
             </h2>
             
             <form id="q-form" class="space-y-4">
-                </form>
+            </form>
 
             <footer class="mt-12 flex justify-between items-center">
                 <button id="prev" class="text-slate-400 font-bold text-xs uppercase tracking-widest hover:text-indigo-900 disabled:opacity-0">Wstecz</button>
-                <button id="next" class="px-10 py-4 bg-indigo-900 text-white rounded-2xl font-bold shadow-lg hover:bg-black transition-all uppercase text-xs tracking-widest">Następne pytanie</button>
+                
+                <div class="flex items-center gap-3">
+                    <button type="button" onclick="finishExam()" class="px-6 py-4 border-2 border-slate-100 text-slate-400 rounded-2xl font-bold hover:bg-slate-50 hover:text-red-600 transition-all uppercase text-[10px] tracking-widest">
+                        Zakończ egzamin
+                    </button>
+                    <button id="next" class="px-10 py-4 bg-indigo-900 text-white rounded-2xl font-bold shadow-lg hover:bg-black transition-all uppercase text-xs tracking-widest">
+                        Następne pytanie
+                    </button>
+                </div>
             </footer>
         </article>
     </main>
@@ -55,11 +70,25 @@
         let current = 0;
         let timeLeft = 90 * 60;
 
+        // --- FUNKCJA ZAKOŃCZENIA (TWOJA LOGIKA) ---
+        function finishExam() {
+            // Zapisujemy odpowiedzi przed wyjściem
+            const sel = document.querySelector('input[name="choice"]:checked');
+            if(sel) userAnswers[current] = sel.value;
+
+            localStorage.setItem('lastExamResults', JSON.stringify({
+                questions: questions,
+                userAnswers: userAnswers,
+                maxPoints: 50
+            }));
+            window.location.href = 'odpowiedzi.html?status=finished';
+        }
+
         // --- PARSER ---
         function parseCSV(csvContent, categoryName) {
             if (!csvContent || csvContent.trim() === "") return [];
             const lines = csvContent.split(/\r?\n/).filter(l => l.trim() !== "");
-            lines.shift(); // Nagłówek
+            lines.shift(); 
             return lines.map(line => {
                 const c = line.split(';').map(v => v.replace(/^"|"$/g, '').trim());
                 return {
@@ -74,11 +103,9 @@
         function getRandom(arr, n, categoryName) {
             const shuffled = [...arr].sort(() => 0.5 - Math.random());
             const selected = shuffled.slice(0, n);
-            
-            // Jeśli w bazie jest za mało pytań, uzupełnij "dummy"
             while (selected.length < n) {
                 selected.push({
-                    text: `[BRAK PYTANIA W BAZIE] Kategoria: ${categoryName}. Dodaj więcej pytań do pliku js!`,
+                    text: `[BRAK PYTANIA W BAZIE] Kategoria: ${categoryName}`,
                     ans: { A: "Opcja A", B: "Opcja B", C: "Opcja C", D: "Opcja D" },
                     correct: "A",
                     category: categoryName
@@ -87,11 +114,8 @@
             return selected;
         }
 
-        // --- LOGIKA LOSOWANIA ZGODNA Z INSTRUKCJĄ ---
         function initExam() {
             try {
-                // Definicja zmiennych z Twojego pliku pytania.js
-                // Sprawdzamy czy zmienne istnieją, jeśli nie - podstawiamy pusty tekst
                 const b1 = typeof baza1 !== 'undefined' ? baza1 : "";
                 const b2 = typeof baza2 !== 'undefined' ? baza2 : "";
                 const b3 = typeof baza3 !== 'undefined' ? baza3 : "";
@@ -99,20 +123,14 @@
                 const b5 = typeof baza5 !== 'undefined' ? baza5 : "";
                 const bS = typeof bazaSpec !== 'undefined' ? bazaSpec : "";
 
-                // 1. Losujemy po 8 pytań z 5 bloków ogólnych (8 * 5 = 40)
                 const q1 = getRandom(parseCSV(b1, "Blok 1: Historia i Teoria"), 8, "Blok 1");
                 const q2 = getRandom(parseCSV(b2, "Blok 2: Ekonomia"), 8, "Blok 2");
                 const q3 = getRandom(parseCSV(b3, "Blok 3: Bezpieczeństwo"), 8, "Blok 3");
                 const q4 = getRandom(parseCSV(b4, "Blok 4: Prawo i Państwo"), 8, "Blok 4");
                 const q5 = getRandom(parseCSV(b5, "Blok 5: Studia Regionalne"), 8, "Blok 5");
-
-                // 2. Losujemy 10 pytań z bloku specjalnościowego
                 const qSpec = getRandom(parseCSV(bS, "Blok Specjalnościowy"), 10, "Specjalność");
 
-                // 3. Łączymy wszystko
                 questions = [...q1, ...q2, ...q3, ...q4, ...q5, ...qSpec];
-                
-                // 4. Mieszamy finalną listę 50 pytań, żeby nie szły blokami
                 questions.sort(() => 0.5 - Math.random());
 
                 userAnswers = new Array(50).fill(null);
@@ -125,7 +143,6 @@
             }
         }
 
-        // --- RENDEROWANIE ---
         function render() {
             const q = questions[current];
             document.getElementById('q-text').innerText = q.text;
@@ -143,10 +160,9 @@
             `).join('');
 
             document.getElementById('prev').disabled = current === 0;
-            document.getElementById('next').innerText = current === 49 ? "Zakończ egzamin" : "Następne pytanie";
+            document.getElementById('next').innerText = current === 49 ? "Zakończ" : "Następne pytanie";
         }
 
-        // --- TIMER ---
         function startTimer() {
             const display = document.getElementById('timer');
             const interval = setInterval(() => {

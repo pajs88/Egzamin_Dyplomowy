@@ -1,0 +1,117 @@
+/* --- OGÓLNE I TŁO --- */
+body {
+    background-color: #fcfcfc;
+    color: #0f172a; /* slate-900 */
+    font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* Efekty szklanych kart (Index & Sniper) */
+.glass-card {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 2rem;
+}
+
+.hover-scale {
+    transition: transform 0.2s ease-in-out;
+}
+
+.hover-scale:hover {
+    transform: scale(1.02);
+}
+
+/* --- TRYB UCZENIA (Filtry) --- */
+.filter-btn {
+    transition: all 0.3s;
+    border-bottom: 4px solid transparent;
+}
+
+.filter-btn.active.red {
+    border-color: #ef4444;
+    background-color: #fef2f2;
+}
+
+.filter-btn.active.orange {
+    border-color: #f97316;
+    background-color: #fff7ed;
+}
+
+.filter-btn.active.green {
+    border-color: #10b981;
+    background-color: #f0fdf4;
+}
+
+/* --- TRYB EGZAMINU --- */
+/* Zaznaczenie wybranej opcji w formularzu */
+.option-label:has(input:checked) {
+    border-color: #312e81;
+    background-color: #eef2ff;
+}
+
+/* Timer w stanie krytycznym */
+.timer-critical {
+    color: #ef4444;
+    font-weight: 800;
+    animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+/* --- WYNIKI I ODPOWIEDZI --- */
+.correct {
+    border-left: 6px solid #10b981;
+    background-color: #f0fdf4;
+}
+
+.wrong {
+    border-left: 6px solid #ef4444;
+    background-color: #fef2f2;
+}
+
+.badge-correct {
+    background-color: #10b981;
+    color: white;
+}
+
+.badge-wrong {
+    background-color: #ef4444;
+    color: white;
+}
+
+/* --- TRYB SNAJPERA (Specyficzne stany przycisków) --- */
+.option-btn {
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    border-width: 4px;
+    min-height: 110px;
+}
+
+/* Kolory po oddaniu strzału */
+.correct-selected {
+    background-color: #10b981 !important;
+    color: white !important;
+    border-color: #059669 !important;
+    transform: scale(1.02);
+}
+
+.wrong-selected {
+    background-color: #ef4444 !important;
+    color: white !important;
+    border-color: #dc2626 !important;
+}
+
+.actual-correct {
+    background-color: #007c53 !important;
+    color: white !important;
+    border-color: #004d34 !important;
+}
+
+/* Aktywny blok kategorii */
+.block-active {
+    border-color: #312e81 !important;
+    background-color: #312e81 !important;
+    color: white !important;
+}
