@@ -2,58 +2,104 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Centrum Nauki | Priorytety</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- <style>
-        .filter-btn { transition: all 0.3s; border-bottom: 4px solid transparent; }
-        .filter-btn.active.red { border-color: #ef4444; background: #fef2f2; }
-        .filter-btn.active.orange { border-color: #f97316; background: #fff7ed; }
-        .filter-btn.active.green { border-color: #10b981; background: #f0fdf4; }
-    </style> -->
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg-slate-50 min-h-screen pb-20">
+<body class="bg-slate-50 min-h-screen pb-10">
 
-    <div class="max-w-5xl mx-auto px-10 pt-6">
+    <div class="max-w-5xl mx-auto px-6 pt-6">
         <button onclick="window.location.href='index.html'" class="text-slate-400 font-bold text-[10px] uppercase tracking-[0.2em] hover:text-indigo-900 transition-colors flex items-center gap-2">
-            ← Powrót do menu głównego
+            <span data-ui="learning.back_to_menu">← Powrót do menu głównego</span>
         </button>
     </div>
 
-    <header class="p-10 max-w-5xl mx-auto">
-        <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+    <header class="p-6 sm:p-10 max-w-5xl mx-auto">
+        <div class="flex flex-col md:flex-row justify-between items-center gap-6">
             <div class="text-center md:text-left">
-                <h1 class="text-3xl font-black text-indigo-900 uppercase tracking-tighter">Twoje postępy w nauce</h1>
-                <p class="text-slate-500 text-sm">Pytania są segregowane automatycznie na podstawie Twoich wyników</p>
+                <h1 data-ui="learning.header" class="text-2xl sm:text-3xl font-black text-indigo-900 uppercase tracking-tighter">Twoje postępy w nauce</h1>
+                <p data-ui="learning.sub_header" class="text-slate-500 text-sm">Pytania są segregowane automatycznie na podstawie Twoich wyników</p>
             </div>
             
-            <button onclick="resetProgress()" class="px-5 py-2 text-[10px] font-bold uppercase tracking-widest text-red-500 border-2 border-red-100 rounded-xl hover:bg-red-50 hover:border-red-200 transition-all flex items-center gap-2">
+            <div class="flex gap-4">
+                <button onclick="changeLang('pl')" class="text-[10px] font-bold text-slate-400 hover:text-indigo-900 uppercase tracking-widest">PL</button>
+                <button onclick="changeLang('en')" class="text-[10px] font-bold text-slate-400 hover:text-indigo-900 uppercase tracking-widest">EN</button>
+            </div>
+
+            <button onclick="resetProgress()" class="w-full md:w-auto px-5 py-3 text-[10px] font-bold uppercase tracking-widest text-red-500 border-2 border-red-100 rounded-xl hover:bg-red-50 hover:border-red-200 transition-all flex items-center justify-center gap-2">
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
-                Resetuj progres
+                <span data-ui="learning.reset_btn">Resetuj progres</span>
             </button>
         </div>
     </header>
 
-    <nav class="max-w-4xl mx-auto px-4 mb-10 flex gap-4">
-        <button onclick="filter('trudne')" id="btn-trudne" class="filter-btn red flex-1 bg-white p-6 rounded-2xl shadow-sm text-center">
+    <nav class="max-w-4xl mx-auto px-6 mb-10 flex flex-col sm:flex-row gap-3">
+        <button onclick="filter('trudne')" id="btn-trudne" class="filter-btn red flex-1 bg-white p-4 sm:p-6 rounded-2xl shadow-sm text-center transition-all border-b-4 border-transparent active:border-red-500">
             <span class="block text-2xl font-black text-red-500" id="count-trudne">0</span>
-            <span class="text-[10px] font-bold uppercase text-slate-400">Trudne (Błędy ≥ 3)</span>
+            <span data-ui="learning.filter_hard" class="text-[10px] font-bold uppercase text-slate-400">Trudne (Błędy ≥ 3)</span>
         </button>
-        <button onclick="filter('srednie')" id="btn-srednie" class="filter-btn orange flex-1 bg-white p-6 rounded-2xl shadow-sm text-center">
+        <button onclick="filter('srednie')" id="btn-srednie" class="filter-btn orange flex-1 bg-white p-4 sm:p-6 rounded-2xl shadow-sm text-center transition-all border-b-4 border-transparent active:border-orange-500">
             <span class="block text-2xl font-black text-orange-500" id="count-srednie">0</span>
-            <span class="text-[10px] font-bold uppercase text-slate-400">Średnie (W trakcie)</span>
+            <span data-ui="learning.filter_mid" class="text-[10px] font-bold uppercase text-slate-400">Średnie (W trakcie)</span>
         </button>
-        <button onclick="filter('umiem')" id="btn-umiem" class="filter-btn green flex-1 bg-white p-6 rounded-2xl shadow-sm text-center">
+        <button onclick="filter('umiem')" id="btn-umiem" class="filter-btn green flex-1 bg-white p-4 sm:p-6 rounded-2xl shadow-sm text-center transition-all border-b-4 border-transparent active:border-emerald-500">
             <span class="block text-2xl font-black text-emerald-500" id="count-umiem">0</span>
-            <span class="text-[10px] font-bold uppercase text-slate-400">Umiem (Poprawne ≥ 3)</span>
+            <span data-ui="learning.filter_ok" class="text-[10px] font-bold uppercase text-slate-400">Umiem (Poprawne ≥ 3)</span>
         </button>
     </nav>
 
-    <main id="learning-container" class="max-w-4xl mx-auto px-4 space-y-6">
-        </main>
+    <main id="learning-container" class="max-w-4xl mx-auto px-6 space-y-4">
+    </main>
 
     <script>
-        // Pobieranie danych (funkcja odświeżalna)
+        const translations = {
+            pl: {
+                learning: {
+                    back_to_menu: "← Powrót do menu głównego",
+                    header: "Twoje postępy w nauce",
+                    sub_header: "Pytania są segregowane automatycznie",
+                    reset_btn: "Resetuj progres",
+                    filter_hard: "Trudne (Błędy ≥ 3)",
+                    filter_mid: "Średnie (W trakcie)",
+                    filter_ok: "Umiem (Poprawne ≥ 3)",
+                    empty: "Brak pytań w tej kategorii.",
+                    confirm_reset: "Czy na pewno chcesz zresetować wszystkie postępy? Twoje liczniki zostaną wyzerowane."
+                }
+            },
+            en: {
+                learning: {
+                    back_to_menu: "← Back to main menu",
+                    header: "Your Learning Progress",
+                    sub_header: "Questions are automatically sorted based on your results",
+                    reset_btn: "Reset Progress",
+                    filter_hard: "Hard (Errors ≥ 3)",
+                    filter_mid: "Mid (In Progress)",
+                    filter_ok: "Known (Correct ≥ 3)",
+                    empty: "No questions in this category.",
+                    confirm_reset: "Are you sure you want to reset all progress? Your counters will be zeroed."
+                }
+            }
+        };
+
+        function changeLang(lang) {
+            localStorage.setItem('selectedLang', lang);
+            applyLanguage();
+            const currentFilter = document.querySelector('.filter-btn.active')?.id.split('-')[1] || 'trudne';
+            filter(currentFilter);
+        }
+
+        function applyLanguage() {
+            const lang = localStorage.getItem('selectedLang') || 'pl';
+            const dict = translations[lang];
+            document.querySelectorAll('[data-ui]').forEach(el => {
+                const path = el.getAttribute('data-ui').split('.');
+                let text = dict;
+                path.forEach(key => text = text ? text[key] : null);
+                if (text) el.innerText = text;
+            });
+        }
+
         function getStats() {
             return JSON.parse(localStorage.getItem('learningStats')) || {};
         }
@@ -64,21 +110,21 @@
             return 'srednie';
         }
 
-        // --- FUNKCJA RESETOWANIA ---
         function resetProgress() {
-            const confirmReset = confirm("Czy na pewno chcesz zresetować wszystkie postępy w nauce? Twoje liczniki poprawnych i błędnych odpowiedzi zostaną wyzerowane.");
-            
-            if (confirmReset) {
+            const lang = localStorage.getItem('selectedLang') || 'pl';
+            if (confirm(translations[lang].learning.confirm_reset)) {
                 localStorage.removeItem('learningStats');
-                // Odświeżamy stronę, by wyczyścić widok
                 window.location.reload();
             }
         }
 
         function filter(type) {
             const stats = getStats();
-            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById('btn-' + type).classList.add('active');
+            const lang = localStorage.getItem('selectedLang') || 'pl';
+            
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active', 'bg-slate-100'));
+            const activeBtn = document.getElementById('btn-' + type);
+            activeBtn.classList.add('active', 'bg-slate-50');
 
             const container = document.getElementById('learning-container');
             container.innerHTML = '';
@@ -86,17 +132,17 @@
             Object.values(stats).forEach(q => {
                 if (getPriority(q) === type) {
                     const card = document.createElement('div');
-                    card.className = "bg-white p-8 rounded-3xl border border-slate-100 shadow-sm";
+                    card.className = "bg-white p-6 sm:p-8 rounded-2xl border border-slate-100 shadow-sm";
                     card.innerHTML = `
                         <div class="flex justify-between mb-4">
-                            <span class="text-[10px] font-bold uppercase text-slate-400 tracking-widest">${q.cat}</span>
-                            <span class="text-[10px] font-bold text-slate-400">OK: ${q.ok} | BAD: ${q.bad}</span>
+                            <span class="text-[9px] font-bold uppercase text-slate-400 tracking-widest">${q.cat}</span>
+                            <span class="text-[9px] font-bold text-slate-400">OK: ${q.ok} | BAD: ${q.bad}</span>
                         </div>
-                        <h3 class="text-xl font-semibold text-slate-800 mb-6">${q.text}</h3>
-                        <div class="grid gap-3">
+                        <h3 class="text-lg font-semibold text-slate-800 mb-6 leading-snug">${q.text}</h3>
+                        <div class="grid gap-2">
                             ${Object.entries(q.ans).map(([key, text]) => `
-                                <div class="p-4 rounded-xl border-2 ${key === q.correct ? 'border-emerald-500 bg-emerald-50 text-emerald-900 font-bold' : 'border-slate-50 text-slate-500'}">
-                                    ${key}: ${text}
+                                <div class="p-3 sm:p-4 text-sm rounded-xl border-2 ${key === q.correct ? 'border-emerald-500 bg-emerald-50 text-emerald-900 font-bold' : 'border-slate-50 text-slate-500'}">
+                                    <span class="font-black opacity-50 mr-2">${key}:</span> ${text}
                                 </div>
                             `).join('')}
                         </div>
@@ -106,7 +152,7 @@
             });
 
             if (container.innerHTML === '') {
-                container.innerHTML = `<div class="text-center py-20 text-slate-400">Brak pytań w tej kategorii.</div>`;
+                container.innerHTML = `<div class="text-center py-20 text-slate-400 text-sm">${translations[lang].learning.empty}</div>`;
             }
         }
 
@@ -119,10 +165,11 @@
             document.getElementById('count-srednie').innerText = c.srednie;
             document.getElementById('count-umiem').innerText = c.umiem;
             
+            applyLanguage();
             filter('trudne');
         }
 
-        init();
+        window.onload = init;
     </script>
 </body>
 </html>
