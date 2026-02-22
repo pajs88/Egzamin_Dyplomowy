@@ -9,10 +9,10 @@ body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
-
 /* =========================================
    GŁÓWNE KOMPONENTY (DESKTOP)
    ========================================= */
+   /* "max-w-5xl mx-auto px-6 pt-6 bg-indigo-900" */
 
 /* Szklane karty (Panel główny) */
 .glass-card {
@@ -159,6 +159,8 @@ body {
         padding-bottom: 2.5rem !important;
     }
 }
+
+
 
 /* =========================================
    BARDZO MAŁE EKRANY (np. iPhone SE)
