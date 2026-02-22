@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Egzamin Dyplomowy | Panel Główny</title>
+    <title>Panel Główny</title>
+    <link rel="icon" type="image/png" href="favicon.svg">
+    <link rel="shortcut icon" href="favicon.svg" type="image/x-icon">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="style.css">
 </head>
@@ -15,9 +17,15 @@
     </div>
 
     <main class="max-w-7xl mx-auto px-6 py-20">
+        
+        <div class="flex justify-end gap-4 mb-4">
+            <button onclick="changeLang('pl')" class="text-[10px] font-bold text-slate-400 hover:text-indigo-900 uppercase tracking-widest transition-colors">PL</button>
+            <button onclick="changeLang('en')" class="text-[10px] font-bold text-slate-400 hover:text-indigo-900 uppercase tracking-widest transition-colors">EN</button>
+        </div>
+
         <header class="text-center mb-16">
-            <h1 class="text-xs font-black uppercase tracking-[0.5em] text-indigo-900 mb-4">Stosunki Międzynarodowe</h1>
-            <p class="text-5xl font-black text-slate-800 tracking-tighter">System Przygotowania <br>do Egzaminu</p>
+            <h1 data-ui="common.university" class="text-xs font-black uppercase tracking-[0.5em] text-indigo-900 mb-4">Stosunki Międzynarodowe</h1>
+            <p data-ui="index.header_main" class="text-5xl font-black text-slate-800 tracking-tighter">System Przygotowania <br>do Egzaminu</p>
         </header>
 
         <div class="grid md:grid-cols-4 gap-8">
@@ -27,16 +35,16 @@
                     <div class="w-12 h-12 bg-indigo-900 text-white rounded-2xl flex items-center justify-center mb-6 shadow-lg">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
                     </div>
-                    <h2 class="text-2xl font-bold text-slate-800 mb-2">Symulacja Egzaminu</h2>
-                    <p class="text-slate-500 text-sm leading-relaxed mb-8">
+                    <h2 data-ui="index.exam_title" class="text-2xl font-bold text-slate-800 mb-2">Symulacja Egzaminu</h2>
+                    <p data-ui="index.exam_desc" class="text-slate-500 text-sm leading-relaxed mb-8">
                         Podejdź do pełnego testu: 50 pytań losowanych zgodnie z oficjalną instrukcją. Czas: 90 minut.
                     </p>
                 </div>
                 <div class="flex flex-col gap-2">
-                    <button onclick="window.location.href='egzamin.html'" class="w-full py-4 bg-indigo-900 text-white rounded-2xl font-bold uppercase text-xs tracking-widest shadow-lg hover:bg-black transition-all">
+                    <button data-ui="index.exam_btn" onclick="window.location.href='egzamin.html'" class="w-full py-4 bg-indigo-900 text-white rounded-2xl font-bold uppercase text-xs tracking-widest shadow-lg hover:bg-black transition-all">
                         Rozpocznij test
                     </button>
-                    <button onclick="window.location.href='odpowiedzi.html'" class="w-full py-4 bg-amber-500 text-white rounded-2xl font-bold shadow-lg hover:bg-amber-600 transition-all uppercase text-xs tracking-widest text-center">
+                    <button data-ui="index.exam_results" onclick="window.location.href='odpowiedzi.html'" class="w-full py-4 bg-amber-500 text-white rounded-2xl font-bold shadow-lg hover:bg-amber-600 transition-all uppercase text-xs tracking-widest text-center">
                         Ostatnie odpowiedzi
                     </button>
                 </div>
@@ -47,12 +55,12 @@
                     <div class="w-12 h-12 bg-amber-500 text-white rounded-2xl flex items-center justify-center mb-6 shadow-lg">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
                     </div>
-                    <h2 class="text-2xl font-bold text-slate-800 mb-2">Pytania Otwarte</h2>
-                    <p class="text-slate-500 text-sm leading-relaxed mb-8">
+                    <h2 data-ui="index.open_title" class="text-2xl font-bold text-slate-800 mb-2">Pytania Otwarte</h2>
+                    <p data-ui="index.open_desc" class="text-slate-500 text-sm leading-relaxed mb-8">
                         Pełna baza zagadnień do części ustnej egzaminu. Przeglądaj pytania podzielone na bloki tematyczne.
                     </p>
                 </div>
-                <button onclick="window.location.href='uczOtw.html'" class="w-full py-4 bg-amber-500 text-white rounded-2xl font-bold uppercase text-xs tracking-widest shadow-lg hover:bg-amber-600 transition-all">
+                <button data-ui="index.open_btn" onclick="window.location.href='uczOtw.html'" class="w-full py-4 bg-amber-500 text-white rounded-2xl font-bold uppercase text-xs tracking-widest shadow-lg hover:bg-amber-600 transition-all">
                     Otwórz Bazę
                 </button>
             </div>
@@ -62,12 +70,12 @@
                     <div class="w-12 h-12 bg-indigo-600 text-white rounded-2xl flex items-center justify-center mb-6 shadow-lg">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="22" y1="12" x2="18" y2="12"/><line x1="6" y1="12" x2="2" y2="12"/><line x1="12" y1="6" x2="12" y2="2"/><line x1="12" y1="22" x2="12" y2="18"/></svg>
                     </div>
-                    <h2 class="text-2xl font-bold text-slate-800 mb-2">Tryb Snajpera</h2>
-                    <p class="text-slate-500 text-sm leading-relaxed mb-8">
+                    <h2 data-ui="index.sniper_title" class="text-2xl font-bold text-slate-800 mb-2">Tryb Snajpera</h2>
+                    <p data-ui="index.sniper_desc" class="text-slate-500 text-sm leading-relaxed mb-8">
                         Trening precyzyjny. Wybierz konkretny blok i strzelaj po jednym pytaniu z natychmiastową odpowiedzią.
                     </p>
                 </div>
-                <button onclick="window.location.href='strzaly.html'" class="w-full py-4 bg-indigo-600 text-white rounded-2xl font-bold uppercase text-xs tracking-widest shadow-lg hover:bg-indigo-700 transition-all">
+                <button data-ui="index.sniper_btn" onclick="window.location.href='strzaly.html'" class="w-full py-4 bg-indigo-600 text-white rounded-2xl font-bold uppercase text-xs tracking-widest shadow-lg hover:bg-indigo-700 transition-all">
                     Otwórz Snajpera
                 </button>
             </div>
@@ -77,16 +85,20 @@
                     <div class="w-12 h-12 bg-emerald-500 text-white rounded-2xl flex items-center justify-center mb-6 shadow-lg">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
                     </div>
-                    <h2 class="text-2xl font-bold text-slate-800 mb-2">Moje Postępy</h2>
-                    <p class="text-slate-500 text-sm leading-relaxed mb-4">
+                    <h2 data-ui="index.stats_title" class="text-2xl font-bold text-slate-800 mb-2">Moje Postępy</h2>
+                    <p data-ui="index.stats_desc" class="text-slate-500 text-sm leading-relaxed mb-4">
                         Przeglądaj statystyki swojej nauki. System segreguje pytania na te trudne i te, które już umiesz.
                     </p>
                     <div id="quick-stats" class="flex gap-2 mb-8">
-                        <div class="px-3 py-1 bg-red-50 text-red-500 text-[10px] font-bold rounded-lg border border-red-100">TRUDNE: <span id="s-trudne">0</span></div>
-                        <div class="px-3 py-1 bg-emerald-50 text-emerald-500 text-[10px] font-bold rounded-lg border border-emerald-100">UMIEM: <span id="s-umiem">0</span></div>
+                        <div class="px-3 py-1 bg-red-50 text-red-500 text-[10px] font-bold rounded-lg border border-red-100 uppercase">
+                            <span data-ui="index.stat_hard">TRUDNE</span>: <span id="s-trudne">0</span>
+                        </div>
+                        <div class="px-3 py-1 bg-emerald-50 text-emerald-500 text-[10px] font-bold rounded-lg border border-emerald-100 uppercase">
+                            <span data-ui="index.stat_known">UMIEM</span>: <span id="s-umiem">0</span>
+                        </div>
                     </div>
                 </div>
-                <button onclick="window.location.href='uczenie.html'" class="w-full py-4 bg-white text-indigo-900 border-2 border-indigo-900 rounded-2xl font-bold uppercase text-xs tracking-widest hover:bg-indigo-50 transition-all">
+                <button data-ui="index.stats_btn" onclick="window.location.href='uczenie.html'" class="w-full py-4 bg-white text-indigo-900 border-2 border-indigo-900 rounded-2xl font-bold uppercase text-xs tracking-widest hover:bg-indigo-50 transition-all">
                     Przejdź do nauki
                 </button>
             </div>
@@ -94,13 +106,81 @@
         </div>
 
         <footer class="mt-20 text-center">
-            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+            <p data-ui="common.footer" class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
                 System przygotowany na rok akademicki 2025/2026
             </p>
         </footer>
     </main>
 
     <script>
+        const translations = {
+            pl: {
+                common: {
+                    university: "Stosunki Międzynarodowe",
+                    footer: "System przygotowany na rok akademicki 2025/2026"
+                },
+                index: {
+                    header_main: "System Przygotowania <br>do Egzaminu",
+                    exam_title: "Symulacja Egzaminu",
+                    exam_desc: "Podejdź do pełnego testu: 50 pytań losowanych zgodnie z oficjalną instrukcją. Czas: 90 minut.",
+                    exam_btn: "Rozpocznij test",
+                    exam_results: "Ostatnie odpowiedzi",
+                    sniper_title: "Tryb Snajpera",
+                    sniper_desc: "Trening precyzyjny. Wybierz konkretny blok i strzelaj po jednym pytaniu z natychmiastową odpowiedzią.",
+                    sniper_btn: "Otwórz Snajpera",
+                    open_title: "Pytania Otwarte",
+                    open_desc: "Pełna baza zagadnień do części ustnej egzaminu. Przeglądaj pytania podzielone na bloki tematyczne.",
+                    open_btn: "Otwórz Bazę",
+                    stats_title: "Moje Postępy",
+                    stats_desc: "Przeglądaj statystyki swojej nauki. System segreguje pytania na te trudne i te, które już umiesz.",
+                    stat_hard: "TRUDNE",
+                    stat_known: "UMIEM",
+                    stats_btn: "Przejdź do nauki"
+                }
+            },
+            en: {
+                common: {
+                    university: "International Relations",
+                    footer: "System prepared for the 2025/2026 academic year"
+                },
+                index: {
+                    header_main: "Exam Preparation <br>System",
+                    exam_title: "Exam Simulation",
+                    exam_desc: "Take the full test: 50 random questions according to the official instructions. Time: 90 min.",
+                    exam_btn: "Start Test",
+                    exam_results: "Latest Results",
+                    sniper_title: "Sniper Mode",
+                    sniper_desc: "Precision training. Choose a specific block and answer one question at a time with instant feedback.",
+                    sniper_btn: "Launch Sniper",
+                    open_title: "Open Questions",
+                    open_desc: "Full database of topics for the oral part of the exam. Browse questions by category.",
+                    open_btn: "Open Database",
+                    stats_title: "My Progress",
+                    stats_desc: "Review your learning statistics. The system tracks difficult questions and those you have mastered.",
+                    stat_hard: "HARD",
+                    stat_known: "KNOWN",
+                    stats_btn: "Go to Learning"
+                }
+            }
+        };
+
+        function changeLang(lang) {
+            localStorage.setItem('selectedLang', lang);
+            applyLanguage();
+        }
+
+        function applyLanguage() {
+            const lang = localStorage.getItem('selectedLang') || 'pl';
+            const dict = translations[lang];
+
+            document.querySelectorAll('[data-ui]').forEach(el => {
+                const path = el.getAttribute('data-ui').split('.');
+                let text = dict;
+                path.forEach(key => text = text ? text[key] : null);
+                if (text) el.innerHTML = text; // innerHTML, aby zachować <br> w nagłówku
+            });
+        }
+
         function loadQuickStats() {
             const stats = JSON.parse(localStorage.getItem('learningStats')) || {};
             let trudne = 0;
@@ -115,7 +195,10 @@
             document.getElementById('s-umiem').innerText = umiem;
         }
 
-        window.onload = loadQuickStats;
+        window.onload = () => {
+            loadQuickStats();
+            applyLanguage();
+        };
     </script>
 </body>
 </html>

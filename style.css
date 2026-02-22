@@ -1,14 +1,20 @@
-/* --- OGÓLNE I TŁO --- */
+/* =========================================
+   OGÓLNE USTAWIENIA I TYPOGRAFIA
+   ========================================= */
 body {
     background-color: #fcfcfc;
-    color: #0f172a; /* slate-900 */
+    color: #0f172a;
     font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    /* Poprawa renderowania czcionek na iOS/Android */
+    /* Płynniejsze renderowanie czcionek na iOS/Android */
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
 
-/* Efekty szklanych kart (Index & Sniper) */
+/* =========================================
+   GŁÓWNE KOMPONENTY (DESKTOP)
+   ========================================= */
+
+/* Szklane karty (Panel główny) */
 .glass-card {
     background: rgba(255, 255, 255, 0.8);
     backdrop-filter: blur(10px);
@@ -18,37 +24,36 @@ body {
 }
 
 .hover-scale {
-    transition: transform 0.2s ease-in-out;
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Wyłączamy hover scale na dotyku, żeby uniknąć dziwnych zachowań */
-@media (hover: hover) {
+/* TRYB PRO: Aktywujemy hover tylko na urządzeniach z myszką. 
+   Zapobiega to "zawieszaniu" się powiększonych kafelków po dotknięciu palcem na telefonie. */
+@media (hover: hover) and (pointer: fine) {
     .hover-scale:hover {
         transform: scale(1.02);
     }
 }
 
-/* --- TRYB UCZENIA (Filtry) --- */
+/* Filtry (Tryb Uczenia) */
 .filter-btn {
-    transition: all 0.3s;
+    transition: all 0.3s ease;
     border-bottom: 4px solid transparent;
-    white-space: nowrap; /* Zapobiega łamaniu tekstu na małych ekranach */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 .filter-btn.active.red { border-color: #ef4444; background-color: #fef2f2; }
 .filter-btn.active.orange { border-color: #f97316; background-color: #fff7ed; }
 .filter-btn.active.green { border-color: #10b981; background-color: #f0fdf4; }
 
-/* --- EGZAMIN (Radio buttons) --- */
-/* Ukrycie domyślnego radia i stylizacja etykiety */
-input[type="radio"] {
-    display: none;
-}
-
+/* Egzamin (Zaznaczone odpowiedzi) */
 .option-label {
     cursor: pointer;
-    transition: all 0.2s;
-    display: block;
+    transition: all 0.2s ease;
+    display: flex;
     width: 100%;
 }
 
@@ -57,7 +62,7 @@ input[type="radio"] {
     background-color: #eef2ff;
 }
 
-/* Timer w stanie krytycznym */
+/* Timer */
 .timer-critical {
     color: #ef4444;
     font-weight: 800;
@@ -69,69 +74,106 @@ input[type="radio"] {
     50% { opacity: 0.7; }
 }
 
-/* --- WYNIKI I ODPOWIEDZI --- */
-.correct {
-    border-left: 6px solid #10b981;
-    background-color: #f0fdf4;
-}
-
-.wrong {
-    border-left: 6px solid #ef4444;
-    background-color: #fef2f2;
-}
-
+/* Odpowiedzi (Podsumowanie) */
+.correct { border-left: 6px solid #10b981; background-color: #f0fdf4; }
+.wrong { border-left: 6px solid #ef4444; background-color: #fef2f2; }
 .badge-correct { background-color: #10b981; color: white; }
 .badge-wrong { background-color: #ef4444; color: white; }
 
-/* --- TRYB SNAJPERA & KAFELKI --- */
+/* Tryb Snajpera */
 .option-btn {
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    min-height: 90px;
+    border-width: 4px;
+    min-height: 110px;
     width: 100%;
+    word-break: break-word; /* Zapobiega wylewaniu się długich słów */
 }
 
-/* Kolory Snajpera */
-.correct-selected { background-color: #10b981 !important; color: white !important; border-color: #059669 !important; }
+.correct-selected { background-color: #10b981 !important; color: white !important; border-color: #059669 !important; transform: scale(1.02); }
 .wrong-selected { background-color: #ef4444 !important; color: white !important; border-color: #dc2626 !important; }
 .actual-correct { background-color: #007c53 !important; color: white !important; border-color: #004d34 !important; }
 .block-active { border-color: #312e81 !important; background-color: #312e81 !important; color: white !important; }
 
-/* --- DOPASOWANIE MOBILNE (Media Queries) --- */
+
+/* =========================================
+   TRYB PRO: ZAAWANSOWANE RWD (SMARTFONY)
+   ========================================= */
 
 @media (max-width: 768px) {
-    /* Mniejszy nagłówek na telefonach */
-    h1 { font-size: 0.7rem !important; }
-    .text-5xl { font-size: 2.5rem !important; line-height: 1 !important; }
+    /* Skalowanie całego interfejsu (Tailwind używa rem, więc zmniejszenie html proporcjonalnie zmniejszy wszystko) */
+    html {
+        font-size: 14px; 
+    }
+
+    /* Zabezpieczenie przed przelewaniem wielkich nagłówków (np. w index.html) */
+    .text-5xl {
+        font-size: 2.5rem !important;
+        line-height: 1.1 !important;
+    }
     
-    /* Zmniejszenie paddingów sekcji */
-    main { padding-left: 1rem !important; padding-right: 1rem !important; padding-top: 2rem !important; }
-    
-    /* Kafelki na stronie głównej i w snajperze */
+    .text-7xl {
+        font-size: 4.5rem !important;
+    }
+
+    /* Kafelki główne (Index) - mniejsze odstępy wewnętrzne i elastyczna wysokość */
     .glass-card {
         padding: 1.5rem !important;
         border-radius: 1.5rem !important;
+        min-height: auto !important;
+    }
+
+    /* Przyciski trybu Snajpera - optymalizacja pod przestrzeń roboczą telefonu */
+    .option-btn {
+        min-height: 85px; 
+        padding: 1rem !important;
+        border-width: 2px; /* Na telefonie 4px wygląda zbyt topornie */
+    }
+
+    /* Przyciski w "Pytaniach Otwartych" */
+    .block-btn {
+        min-height: auto !important;
+        padding: 1.25rem !important;
+    }
+
+    /* Nawigacja w "Uczenie" - zmiana na układ pionowy, by filtry nie były ściśnięte */
+    nav.flex {
+        flex-direction: column;
+        gap: 0.75rem !important;
     }
     
-    /* Przyciski w kafelkach na pełną szerokość */
-    button {
-        padding-top: 1rem !important;
-        padding-bottom: 1rem !important;
-    }
-
-    /* Wyśrodkowanie statystyk na mobile */
-    #quick-stats {
-        justify-content: center;
-        flex-wrap: wrap;
-    }
-
-    /* Pytania otwarte - mniejsze karty */
-    .question-card {
+    .filter-btn {
         padding: 1rem !important;
+        width: 100%;
+    }
+
+    /* Statystyki podsumowania - zapobieganie zachodzeniu tekstu na liczby */
+    .flex.justify-between.items-end {
+        flex-direction: column;
+        align-items: flex-start !important;
+        gap: 0.5rem;
+    }
+
+    /* Pady wokół głównej zawartości (main) */
+    main.py-20 {
+        padding-top: 2.5rem !important;
+        padding-bottom: 2.5rem !important;
     }
 }
 
-/* Specyficzne poprawki dla bardzo małych ekranów (iPhone SE itp.) */
-@media (max-width: 380px) {
-    .text-5xl { font-size: 2rem !important; }
-    .option-btn { min-height: 70px; padding: 1rem !important; }
+/* =========================================
+   BARDZO MAŁE EKRANY (np. iPhone SE)
+   ========================================= */
+@media (max-width: 400px) {
+    html {
+        font-size: 13px; /* Jeszcze drobniejsze skalowanie */
+    }
+    
+    .text-3xl {
+        font-size: 1.75rem !important;
+    }
+
+    /* Pytania i odpowiedzi - zmniejszenie fontu w blokach odpowiedzi */
+    .option-btn span:nth-child(2) {
+        font-size: 0.95rem !important;
+    }
 }
