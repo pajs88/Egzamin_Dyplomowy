@@ -18,7 +18,7 @@
 
     <header class="p-10 max-w-5xl mx-auto text-center">
         <h1 class="text-xs font-black uppercase tracking-[0.3em] text-indigo-900 mb-2">Egzamin Dyplomowy</h1>
-        <h2 class="text-3xl font-black text-slate-800">Pytania Otwarte</h2>
+        <h2 class="text-3xl font-black text-slate-800">Pytania Otwarte i Odpowiedzi</h2>
         <p class="text-slate-400 text-sm mt-2">Wybierz kategorię, aby przejrzeć zagadnienia</p>
     </header>
 
@@ -57,12 +57,14 @@
 
         <div id="questions-container" class="space-y-4">
             <div class="text-center py-20 text-slate-300 border-2 border-dashed border-slate-100 rounded-3xl">
-                Wybierz kategorię powyżej, aby wyświetlić listę pytań
+                Wybierz kategorię powyżej, aby wyświetlić listę pytań i odpowiedzi
             </div>
         </div>
     </main>
 
+    <!-- Skrypty z bazami pytań i odpowiedzi -->
     <script src="./pliki z pytaniami/pytaniaO.js"></script>
+    <script src="./pliki z pytaniami/odpowiedziO.js"></script>
 
     <script>
         const blockNames = {
@@ -79,12 +81,33 @@
             const lines = csvString.trim().split('\n');
             const result = [];
             for (let i = 1; i < lines.length; i++) {
-                const parts = lines[i].split(';');
-                if (parts.length >= 2) {
-                    result.push({ id: parts[0], text: parts[1] });
+                const line = lines[i].trim();
+                if (!line) continue;
+                const sepIndex = line.indexOf(';');
+                if (sepIndex !== -1) {
+                    const id = line.substring(0, sepIndex).trim();
+                    const text = line.substring(sepIndex + 1).trim();
+                    result.push({ id, text });
                 }
             }
             return result;
+        }
+
+        function parseAnswers(csvString) {
+            if (!csvString) return {};
+            const lines = csvString.trim().split('\n');
+            const map = {};
+            for (let i = 1; i < lines.length; i++) {
+                const line = lines[i].trim();
+                if (!line) continue;
+                const sepIndex = line.indexOf(';');
+                if (sepIndex !== -1) {
+                    const id = line.substring(0, sepIndex).trim();
+                    const text = line.substring(sepIndex + 1).trim();
+                    map[id] = text;
+                }
+            }
+            return map;
         }
 
         function loadBlock(blockNum, btnElement) {
@@ -93,17 +116,38 @@
             });
             btnElement.classList.add('border-indigo-600', 'bg-indigo-50', 'ring-2', 'ring-indigo-100');
 
-            let rawData;
+            let rawDataQ = "";
+            let rawDataA = "";
+
             switch(blockNum) {
-                case 1: rawData = typeof bazaO1 !== 'undefined' ? bazaO1 : ""; break;
-                case 2: rawData = typeof bazaO2 !== 'undefined' ? bazaO2 : ""; break;
-                case 3: rawData = typeof bazaO3 !== 'undefined' ? bazaO3 : ""; break;
-                case 4: rawData = typeof bazaO4 !== 'undefined' ? bazaO4 : ""; break;
-                case 5: rawData = typeof bazaO5 !== 'undefined' ? bazaO5 : ""; break;
-                case 6: rawData = typeof bazaO6 !== 'undefined' ? bazaO6 : ""; break;
+                case 1: 
+                    rawDataQ = typeof bazaO1 !== 'undefined' ? bazaO1 : "";
+                    rawDataA = typeof odpO1 !== 'undefined' ? odpO1 : "";
+                    break;
+                case 2: 
+                    rawDataQ = typeof bazaO2 !== 'undefined' ? bazaO2 : "";
+                    rawDataA = typeof odpO2 !== 'undefined' ? odpO2 : "";
+                    break;
+                case 3: 
+                    rawDataQ = typeof bazaO3 !== 'undefined' ? bazaO3 : "";
+                    rawDataA = typeof odpO3 !== 'undefined' ? odpO3 : "";
+                    break;
+                case 4: 
+                    rawDataQ = typeof bazaO4 !== 'undefined' ? bazaO4 : "";
+                    rawDataA = typeof odpO4 !== 'undefined' ? odpO4 : "";
+                    break;
+                case 5: 
+                    rawDataQ = typeof bazaO5 !== 'undefined' ? bazaO5 : "";
+                    rawDataA = typeof odpO5 !== 'undefined' ? odpO5 : "";
+                    break;
+                case 6: 
+                    rawDataQ = typeof bazaO6 !== 'undefined' ? bazaO6 : "";
+                    rawDataA = typeof odpO6 !== 'undefined' ? odpO6 : "";
+                    break;
             }
 
-            const questions = parseBaza(rawData);
+            const questions = parseBaza(rawDataQ);
+            const answersMap = parseAnswers(rawDataA);
             const container = document.getElementById('questions-container');
             
             container.innerHTML = `
@@ -118,18 +162,28 @@
 
             if (questions.length === 0) {
                 container.innerHTML += `<div class="text-center py-10 text-slate-400 italic">Błąd ładowania bazy lub brak pytań w tym bloku.</div>`;
+                return;
             }
 
             questions.forEach(q => {
+                const answer = answersMap[q.id] || "Brak opracowanej odpowiedzi w bazie.";
                 const qCard = document.createElement('div');
-                qCard.className = "p-6 bg-white rounded-2xl border border-slate-100 shadow-sm hover:border-indigo-200 transition-all hover:shadow-md";
+                qCard.className = "p-6 bg-white rounded-2xl border border-slate-100 shadow-sm hover:border-indigo-200 transition-all hover:shadow-md space-y-4";
                 qCard.innerHTML = `
-                    <div class="flex gap-4">
-                        <span class="flex-shrink-0 w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center text-xs font-black text-slate-400 border border-slate-100">
+                    <div class="flex gap-4 items-start">
+                        <span class="flex-shrink-0 w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center text-xs font-black text-indigo-600 border border-indigo-100">
                             ${q.id}
                         </span>
-                        <p class="text-slate-700 font-medium leading-relaxed pt-1">
+                        <p class="text-slate-800 font-bold leading-relaxed pt-1">
                             ${q.text}
+                        </p>
+                    </div>
+                    <div class="pt-4 border-t border-slate-100 bg-slate-50/60 p-4 rounded-xl border border-slate-100">
+                        <span class="text-[11px] font-black uppercase tracking-wider text-indigo-600 block mb-2">
+                            Odpowiedź:
+                        </span>
+                        <p class="text-slate-700 text-sm leading-relaxed whitespace-pre-line">
+                            ${answer}
                         </p>
                     </div>
                 `;
