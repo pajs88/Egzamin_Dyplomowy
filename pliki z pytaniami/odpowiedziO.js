@@ -5,14 +5,15 @@ const odpO1 = `ID;Odpowiedź
 2;Państwo upadające stopniowo traci kontrolę nad krajem. Państwo upadłe nie potrafi zapewnić podstawowych usług i bezpieczeństwa. Państwo dysfunkcjonalne ma źle działające instytucje. Przykłady to Somalia i Libia. Takie państwa mogą być źródłem konfliktów i kryzysów.
 3;Podmioty stosunków międzynarodowych to państwa i podmioty niepaństwowe, np. organizacje międzynarodowe, firmy, NGO i jednostki. Państwa są najważniejsze, ponieważ mają własne terytorium, władzę i prowadzą politykę zagraniczną.
 4;Realizm zakłada, że państwa rywalizują o siłę i bezpieczeństwo. Liberalizm podkreśla współpracę, handel, prawo i rolę organizacji międzynarodowych.
-5;Równowaga sił oznacza, że żadne państwo nie ma przewagi pozwalającej mu rządzić innymi. Można ją utrzymać przez sojusze i wzmacnianie własnej siły.
+5;Równowaga sił oznacza taki układ, w którym żadne państwo nie ma przewagi pozwalającej zdominować innych. Utrzymuje się ją m.in. przez sojusze i wzmacnianie własnej siły. Kluczową zasadą jest w teorii realizmu.
 6;Teoria Wallersteina dzieli światową gospodarkę na centrum, półperyferie i peryferie. Centrum jest bogate i kontroluje technologie, peryferie dostarczają surowce i tanią pracę, a półperyferie znajdują się pomiędzy nimi. Podział ten utrwala nierówności.
 7;Ład wersalski powstał po I wojnie światowej, aby utrzymać pokój. Osłabiły go niezadowolenie Niemiec, spory o granice, słabość Ligi Narodów i dążenia państw do podbojów.
-8;Totalitaryzm to system, w którym państwo kontroluje niemal całe życie społeczeństwa, a władzę sprawuje jedna partia. W ZSRR Stalina ważne były kolektywizacja i planowanie gospodarki, a w III Rzeszy rasizm i podboje. Oba reżimy stosowały terror i represje.
+8;Totalitaryzm to system, w którym państwo kontroluje niemal całe życie społeczeństwa. Cechy: jedna partia, kult wodza, terror, cenzura, kontrola społeczeństwa, likwidacja opozycji. W ZSRR Stalina ważne były kolektywizacja i planowanie gospodarki, a w III Rzeszy rasizm i podboje.
 9;W III Rzeszy masowe zbrodnie wynikały z rasizmu i antysemityzmu. Przykładami są Holokaust i zagłada Romów. W ZSRR represje dotykały m.in. przeciwników politycznych i osób uznanych za wrogów, czego przykładami są Wielki Terror, deportacje i zbrodnia katyńska.
-10;Polska przed II wojną światową starała się utrzymywać dobre stosunki zarówno z Niemcami, jak i ZSRR. Miała też sojusze z Francją i Rumunią. Polityka ta nie zapobiegła atakowi Niemiec 1 września i ZSRR 17 września 1939 roku.
+10;Polska opierała bezpieczeństwo na sojuszu z Francją i Rumunią oraz Lidze Narodów. W latach 30. prowadziła politykę równowagi między Niemcami i ZSRR, zawierając z nimi pakty o nieagresji. W 1939 r. zbliżyła się do Wielkiej Brytanii i Francji, ale ich pomoc okazała się niewystarczająca, a pakt Ribbentrop–Mołotow umożliwił Niemcom i ZSRR wspólny atak na Polskę.
 11;W 1939 roku ZSRR podpisał z Niemcami pakt Ribbentrop-Mołotow i współpracował z nimi do 1941 roku. Po niemieckim ataku ZSRR dołączył do aliantów i razem z USA oraz Wielką Brytanią walczył przeciwko Niemcom. Państwa te różniły się w sprawach powojennej Europy.
 12;Po II wojnie światowej Berlin podzielono na cztery sektory kontrolowane przez aliantów. Blokada miasta w latach 1948–1949 i budowa muru w 1961 roku pokazały podział Europy podczas zimnej wojny. Mur otwarto w 1989 roku, a Niemcy zjednoczyły się w 1990 roku.`;
+
 
 // Blok 2: Ekonomia i międzynarodowe stosunki ekonomiczne
 const odpO2 = `ID;Odpowiedź
