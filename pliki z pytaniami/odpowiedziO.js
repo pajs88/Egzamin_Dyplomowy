@@ -5,7 +5,7 @@ const odpO1 = `ID;Odpowiedź
 2;Państwo upadające stopniowo traci kontrolę nad krajem. Państwo upadłe nie potrafi zapewnić podstawowych usług i bezpieczeństwa. Państwo dysfunkcjonalne ma źle działające instytucje. Przykłady to Somalia i Libia. Takie państwa mogą być źródłem konfliktów i kryzysów.
 3;Podmioty stosunków międzynarodowych to państwa i podmioty niepaństwowe, np. organizacje międzynarodowe, firmy, NGO i jednostki. Państwa są najważniejsze, ponieważ mają własne terytorium, władzę i prowadzą politykę zagraniczną.
 4;Realizm zakłada, że państwa rywalizują o siłę i bezpieczeństwo. Liberalizm podkreśla współpracę, handel, prawo i rolę organizacji międzynarodowych.
-5;Równowaga sił oznacza, że żadne państwo nie ma przewagi pozwalającej mu rządzić innymi. Można ją utrzymać przez sojusze i wzmacnianie własnej siły.
+5;Równowaga sił oznacza taki układ, w którym żadne państwo nie ma przewagi pozwalającej zdominować innych. Utrzymuje się ją m.in. przez sojusze i wzmacnianie własnej siły. Kluczową zasadą jest w teorii realizmu.
 6;Teoria Wallersteina dzieli światową gospodarkę na centrum, półperyferie i peryferie. Centrum jest bogate i kontroluje technologie, peryferie dostarczają surowce i tanią pracę, a półperyferie znajdują się pomiędzy nimi. Podział ten utrwala nierówności.
 7;Ład wersalski powstał po I wojnie światowej, aby utrzymać pokój. Osłabiły go niezadowolenie Niemiec, spory o granice, słabość Ligi Narodów i dążenia państw do podbojów.
 8;Totalitaryzm to system, w którym państwo kontroluje niemal całe życie społeczeństwa, a władzę sprawuje jedna partia. W ZSRR Stalina ważne były kolektywizacja i planowanie gospodarki, a w III Rzeszy rasizm i podboje. Oba reżimy stosowały terror i represje.
