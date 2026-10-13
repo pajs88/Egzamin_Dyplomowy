@@ -6,36 +6,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tryb Snajpera | Wielkie Strzały</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- <style>
-        .option-btn { 
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); 
-            border-width: 4px;
-            min-height: 110px;
-        }
-
-        /* KOLORY ZGODNIE Z PROŚBĄ */
-        .correct-selected { background-color: #10b981 !important; color: white !important; border-color: #059669 !important; transform: scale(1.02); }
-        .wrong-selected { background-color: #ef4444 !important; color: white !important; border-color: #dc2626 !important; }
-        .actual-correct { background-color: #007c53 !important; color: white !important; border-color: #004d34 !important; }
-        
-        .block-active { border-color: #312e81 !important; background-color: #312e81 !important; color: white !important; }
-        .glass-card { background: white; border-radius: 4rem; border: 4px solid white; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15); }
-    </style> -->
-
-  <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body class="bg-slate-200 text-slate-900 font-sans min-h-screen pb-20">
 
-    <header class="p-8 max-w-7xl mx-auto flex justify-between items-center">
-        <div>
-            <h1 class="text-4xl font-black uppercase tracking-tighter text-indigo-900">Tryb Snajpera</h1>
-            <p class="text-xs font-bold text-slate-500 uppercase tracking-widest mt-1">Jedno pytanie, jedna odpowiedź</p>
+    <header class="p-8 max-w-7xl mx-auto flex justify-between items-center flex-wrap gap-4">
+        <div class="flex items-center gap-6 flex-wrap">
+            <div>
+                <h1 class="text-4xl font-black uppercase tracking-tighter text-indigo-900">Tryb Snajpera</h1>
+                <p class="text-xs font-bold text-slate-500 uppercase tracking-widest mt-1">Jedno pytanie, jedna odpowiedź</p>
+            </div>
+            <div class="flex items-center gap-2">
+                <button onclick="resetBlockProgress()" class="px-4 py-2.5 bg-rose-50 text-rose-600 hover:bg-rose-100 hover:text-rose-700 text-[10px] font-black uppercase tracking-widest rounded-2xl transition-all border border-rose-200 shadow-sm flex items-center gap-1.5 cursor-pointer">
+                    <span>🔄 resetuj blok</span>
+                </button>
+                <button onclick="resetAllProgress()" class="px-4 py-2.5 bg-red-100 text-red-700 hover:bg-red-200 hover:text-red-800 text-[10px] font-black uppercase tracking-widest rounded-2xl transition-all border border-red-300 shadow-sm flex items-center gap-1.5 cursor-pointer">
+                    <span>⚠️ resetuj wszystko</span>
+                </button>
+            </div>
         </div>
-        <div class="max-w-5xl mx-auto px-6 pt-6">
-        <button onclick="window.location.href='index.html'" class="text-slate-400 font-bold text-[10px] uppercase tracking-[0.2em] hover:text-indigo-900 transition-colors flex items-center gap-2">
-            <span data-ui="learning.back_to_menu">← Powrót do menu głównego</span>
-        </button>
-    </div>
+        <div>
+            <button onclick="window.location.href='index.html'" class="text-slate-400 font-bold text-[10px] uppercase tracking-[0.2em] hover:text-indigo-900 transition-colors flex items-center gap-2">
+                <span>← Powrót do menu głównego</span>
+            </button>
+        </div>
     </header>
 
     <main class="max-w-7xl mx-auto px-4">
@@ -68,8 +62,22 @@
         </section>
 
         <article id="question-card" class="glass-card p-12 md:p-20 hidden relative">
+            <!-- Lewy badge: Nazwa bloku -->
             <div id="badge" class="absolute top-0 left-12 px-8 py-3 bg-indigo-900 text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-b-2xl">
                 WYBIERZ BLOK
+            </div>
+
+            <!-- Prawe badge: Liczniki (Błędne na czerwono, Poprawne na zielono, Pula aktywna na niebiesko) -->
+            <div class="absolute top-0 right-12 flex gap-3">
+                <div id="red-counter-badge" class="px-6 py-3 bg-rose-600 text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-b-2xl shadow-md">
+                    Błędne: 0
+                </div>
+                <div id="counter-badge" class="px-8 py-3 bg-emerald-700 text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-b-2xl shadow-md">
+                    0/0
+                </div>
+                <div id="pool-counter-badge" class="px-8 py-3 bg-indigo-600 text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-b-2xl shadow-md">
+                    0/0
+                </div>
             </div>
 
             <h2 id="q-text" class="text-3xl md:text-5xl font-black text-slate-800 text-center mb-16 mt-6 leading-tight tracking-tight">
@@ -77,7 +85,7 @@
             </h2>
 
             <div id="options-container" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                </div>
+            </div>
 
             <div id="action-area" class="mt-16 text-center hidden">
                 <button onclick="drawNext()" class="px-16 py-8 bg-indigo-900 text-white rounded-[2.5rem] font-black uppercase text-xl tracking-widest shadow-2xl hover:bg-black hover:-translate-y-2 transition-all">
@@ -95,6 +103,7 @@
     <script src="./pliki z pytaniami/pytania.js"></script>
 
     <script>
+        let fullBlockPool = [];
         let currentPool = [];
         let currentLabel = "";
         let answered = false;
@@ -123,10 +132,77 @@
             });
         }
 
+        // Funkcja resetująca progres wyłącznie dla aktualnie wybranego bloku
+        function resetBlockProgress() {
+            if (fullBlockPool.length === 0) {
+                alert("Najpierw wybierz blok, aby zresetować jego progres!");
+                return;
+            }
+            if (confirm("Czy na pewno chcesz zresetować postępy dla tego bloku? Wszystkie pytania wrócą do puli.")) {
+                let stats = JSON.parse(localStorage.getItem('learningStats')) || {};
+                
+                fullBlockPool.forEach(q => {
+                    delete stats[q.text];
+                });
+
+                localStorage.setItem('learningStats', JSON.stringify(stats));
+                
+                updateCounters();
+                drawNext();
+            }
+        }
+
+        // Funkcja resetująca progres ze WSZYSTKICH bloków na raz
+        function resetAllProgress() {
+            if (confirm("Czy na pewno chcesz zresetować postępy ze WSZYSTKICH bloków? Tej operacji nie można cofnąć.")) {
+                localStorage.removeItem('learningStats');
+                
+                updateCounters();
+                if (fullBlockPool.length > 0) {
+                    drawNext();
+                }
+            }
+        }
+
+        // Funkcja aktualizująca wszystkie trzy liczniki w prawym górnym rogu
+        function updateCounters() {
+            let stats = JSON.parse(localStorage.getItem('learningStats')) || {};
+            
+            let correctCount = 0;
+            let wrongCount = 0;
+            let total = fullBlockPool.length;
+
+            fullBlockPool.forEach(q => {
+                const qStats = stats[q.text];
+                if (qStats) {
+                    if (!qStats.status) {
+                        if (qStats.ok > 0 && qStats.bad === 0) qStats.status = 'correct';
+                        else if (qStats.bad > 0) qStats.status = 'wrong';
+                        else qStats.status = 'none';
+                    }
+
+                    if (qStats.status === 'correct') {
+                        correctCount++;
+                    } else if (qStats.status === 'wrong') {
+                        wrongCount++;
+                    }
+                }
+            });
+
+            // Filtrujemy aktywną pulę (pytania, które mają mniej niż 3 poprawne odpowiedzi)
+            currentPool = fullBlockPool.filter(q => {
+                const s = stats[q.text];
+                return !(s && s.ok >= 3);
+            });
+
+            document.getElementById('counter-badge').innerText = `${correctCount}/${total}`;
+            document.getElementById('red-counter-badge').innerText = `Błędne: ${wrongCount}`;
+            document.getElementById('pool-counter-badge').innerText = `${currentPool.length}/${total}`;
+        }
+
         function loadBlock(num, btn) {
             let rawData = "";
             
-            // WZOROWANE NA EGZAMINIE: typeof
             if(num === 1) rawData = typeof baza1 !== 'undefined' ? baza1 : "";
             else if(num === 2) rawData = typeof baza2 !== 'undefined' ? baza2 : "";
             else if(num === 3) rawData = typeof baza3 !== 'undefined' ? baza3 : "";
@@ -139,7 +215,7 @@
                 return;
             }
 
-            currentPool = parseCSV(rawData);
+            fullBlockPool = parseCSV(rawData);
             currentLabel = labels[num];
 
             document.querySelectorAll('.block-btn').forEach(b => b.classList.remove('block-active'));
@@ -148,10 +224,22 @@
             document.getElementById('placeholder').classList.add('hidden');
             document.getElementById('question-card').classList.remove('hidden');
             
+            updateCounters();
             drawNext();
         }
 
         function drawNext() {
+            updateCounters();
+
+            if (currentPool.length === 0) {
+                document.getElementById('badge').innerText = currentLabel;
+                document.getElementById('q-text').innerText = "🎉 Gratulacje! Opanowałeś wszystkie pytania w tym bloku (zdane po 3 razy)!";
+                document.getElementById('options-container').innerHTML = '';
+                document.getElementById('action-area').classList.add('hidden');
+                window.scrollTo({ top: document.getElementById('question-card').offsetTop - 30, behavior: 'smooth' });
+                return;
+            }
+
             answered = false;
             document.getElementById('action-area').classList.add('hidden');
             
@@ -185,9 +273,9 @@
             const isCorrect = (key === correct);
             const buttons = document.querySelectorAll('.option-btn');
 
-            // --- LOGIKA ZAPISYWANIA POSTĘPU (ZGODNA Z UCZENIE.HTML) ---
+            // --- LOGIKA ZAPISU I PRZEPŁYWU LICZNIKÓW ---
             let stats = JSON.parse(localStorage.getItem('learningStats')) || {};
-            const qId = activeQuestion.text; // Używamy treści pytania jako unikalnego klucza
+            const qId = activeQuestion.text; 
 
             if (!stats[qId]) {
                 stats[qId] = {
@@ -195,19 +283,35 @@
                     ans: activeQuestion.ans,
                     correct: activeQuestion.correct,
                     cat: currentLabel,
+                    status: 'none', 
                     ok: 0,
                     bad: 0
                 };
             }
 
+            const qStats = stats[qId];
+            if (!qStats.status) {
+                if (qStats.ok > 0 && qStats.bad === 0) qStats.status = 'correct';
+                else if (qStats.bad > 0) qStats.status = 'wrong';
+                else qStats.status = 'none';
+            }
+
+            const prevStatus = qStats.status;
+
             if (isCorrect) {
-                stats[qId].ok++;
+                qStats.ok++;
+                qStats.status = 'correct';
             } else {
-                stats[qId].bad++;
+                qStats.bad++;
+                if (prevStatus !== 'correct') {
+                    qStats.status = 'wrong';
+                }
             }
 
             localStorage.setItem('learningStats', JSON.stringify(stats));
             // --- KONIEC LOGIKI ZAPISU ---
+
+            updateCounters();
 
             buttons.forEach(btn => {
                 const btnKey = btn.querySelector('span').innerText;
